@@ -52,8 +52,8 @@ VoiceCanvas 是一个先进的多语言语音合成平台，使用最新的 AI �
 
 1. 克隆仓库
 ```bash
-git clone https://github.com/ItusiAI/VoiceCanvas.git
-cd VoiceCanvas
+git clone https://github.com/ItusiAI/Open-VoiceCanvas.git
+cd Open-VoiceCanvas
 ```
 
 2. 安装依赖
