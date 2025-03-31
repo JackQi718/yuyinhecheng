@@ -1,23 +1,30 @@
 # VoiceCanvas
 
-VoiceCanvas 是一个先进的多语言语音合成平台，使用最新的 AI 技术提供高质量的文字转语音服务。
+VoiceCanvas 是一个先进的多语言语音合成平台，使用最新的 AI 技术提供高质量的文字转语音服务和语音克隆服务。
 
 ## 🌟 主要特点
 
 ### 多语言支持
-- 支持超过 25 种语言，包括：
-  - 中文、英文、日文、韩文
-  - 欧洲语言：法语、德语、意大利语、西班牙语等
-  - 亚洲语言：印地语、印尼语、阿拉伯语等
-  - 其他地区语言：希伯来语、威尔士语等
+- 支持超过 50+ 种语言
 
 ### 语音功能
+- 多种语音服务集成：
+  - OpenAI TTS（高质量自然语音）
+  - AWS Polly（多语言支持）
+  - MiniMax（中文优化）
 - 高质量语音合成
 - 男声/女声选择
 - 语速调节
 - 逐字朗读模式
 - 实时音频预览
 - 音频可视化
+- 智能容错机制（自动切换备选服务）
+
+### 语音克隆
+- 个人声音克隆功能
+- 上传音频样本创建个性化声音
+- 克隆声音管理
+- 克隆声音配额控制
 
 ### 文件处理
 - 支持文本文件上传
@@ -35,6 +42,7 @@ VoiceCanvas 是一个先进的多语言语音合成平台，使用最新的 AI �
 - 按年/按月订阅
 - 按量付费选项
 - 字符配额管理
+- 克隆声音配额管理
 
 ## 🛠️ 技术栈
 
@@ -44,8 +52,10 @@ VoiceCanvas 是一个先进的多语言语音合成平台，使用最新的 AI �
 - **数据库**: PostgreSQL (Neon)
 - **ORM**: Prisma
 - **语音服务**: 
+  - OpenAI TTS
   - AWS Polly
   - MiniMax
+- **并发控制**: 自定义速率限制
 - **部署**: Vercel
 
 ## 📦 安装
@@ -64,6 +74,9 @@ npm install
 3. 配置环境变量
 ```bash
 # 创建 .env 文件并添加以下配置
+
+# OpenAI
+OPENAI_API_KEY="your_openai_api_key"
 
 # AWS Polly
 NEXT_PUBLIC_AWS_REGION="us-east-1"
@@ -107,6 +120,7 @@ npm run dev
 
 | 变量名 | 描述 | 必需 |
 |--------|------|------|
+| OPENAI_API_KEY | OpenAI API 密钥 | 是 |
 | NEXT_PUBLIC_AWS_REGION | AWS 区域 (默认 us-east-1) | 是 |
 | NEXT_PUBLIC_AWS_ACCESS_KEY_ID | AWS 访问密钥 ID | 是 |
 | NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY | AWS 访问密钥 | 是 |
@@ -142,36 +156,31 @@ npm run dev
 - 已使用字符数
 - 配额过期时间
 
-## 🌐 支持的语言
+### 克隆声音 (ClonedVoice)
+- 声音ID
+- 用户ID
+- 名称
+- 创建时间
 
-| 语言 | 代码 |
-|------|------|
-| 中文 | zh |
-| 英文 | en |
-| 日文 | ja |
-| 韩文 | ko |
-| 粤语 | yue |
-| 西班牙语 | es |
-| 法语 | fr |
-| 德语 | de |
-| 意大利语 | it |
-| 葡萄牙语 | pt |
-| 俄语 | ru |
-| 荷兰语 | nl |
-| 瑞典语 | sv |
-| 挪威语 | no |
-| 丹麦语 | da |
-| 芬兰语 | fi |
-| 希腊语 | el |
-| 波兰语 | pl |
-| 罗马尼亚语 | ro |
-| 匈牙利语 | hu |
-| 土耳其语 | tr |
-| 威尔士语 | cy |
-| 阿拉伯语 | ar |
-| 希伯来语 | he |
-| 印地语 | hi |
-| 印尼语 | id |
+## 🔊 支持的语音服务
+
+### OpenAI TTS
+- 高质量自然语音
+- 支持多种声音：alloy, echo, fable, onyx, nova, shimmer, ash, coral, ballad, sage
+- 语速调节
+- 自动容错（失败时切换到AWS Polly）
+
+### AWS Polly
+- 多语言支持
+- 多种声音选择
+- 语速调节
+
+### MiniMax
+- 中文优化
+- 语音克隆功能
+- 多语言支持
+- 语速调节
+
 
 ## 📄 许可证
 
