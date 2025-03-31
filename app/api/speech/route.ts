@@ -42,42 +42,51 @@ export async function POST(req: Request) {
     // 应用基于用户的并发限制
     await limiter.acquire(userId);
 
-    const { text, language, voiceId } = await req.json();
+    const { text, language, voiceId, speed = 1, useClonedVoice = false } = await req.json();
     
+    // 验证必需参数
+    if (!text) {
+      return NextResponse.json({ error: '文本内容不能为空' }, { status: 400 });
+    }
+
     // 详细的请求日志
     console.log('API Request:', {
       text,
       language,
+      voiceId,
+      speed,
+      useClonedVoice,
       groupId: MINIMAX_GROUP_ID,
       apiKeyLength: MINIMAX_API_KEY?.length
     });
 
     const requestBody = {
-      model: 'speech-01-turbo',
+      model: "speech-01-turbo",
       text,
-      timber_weights: [
-        {
-          voice_id: voiceId,
-          weight: 100
-        }
-      ],
+      stream: false,
       voice_setting: {
-        voice_id: "",
-        speed: 1,
-        pitch: 0,
+        voice_id: voiceId || "female-qn-qingse",
+        speed: speed || 1,
         vol: 1,
-        latex_read: false
+        pitch: 0
       },
       audio_setting: {
         sample_rate: 32000,
         bitrate: 128000,
-        format: "mp3"
-      },
-      language_boost: "auto"
+        format: "mp3",
+        channel: 1
+      }
     };
+
+    if (!useClonedVoice && language) {
+      Object.assign(requestBody, {
+        language_boost: language
+      });
+    }
 
     const url = `https://api.minimax.chat/v1/t2a_v2?GroupId=${MINIMAX_GROUP_ID}`;
     console.log('Making request to:', url);
+    console.log('Request body:', JSON.stringify(requestBody, null, 2));
 
     // 使用 AbortController 设置超时
     const controller = new AbortController();
@@ -89,6 +98,7 @@ export async function POST(req: Request) {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${MINIMAX_API_KEY}`,
+          'MM-Api-Key': MINIMAX_API_KEY || ''
         },
         body: JSON.stringify(requestBody),
         signal: controller.signal
@@ -97,30 +107,26 @@ export async function POST(req: Request) {
       clearTimeout(timeout);
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorText = await response.text();
+        console.error('Minimax API error:', errorText);
+        throw new Error(`Minimax API error: ${response.status}`);
       }
 
-      const responseText = await response.text();
+      const jsonResponse = await response.json();
       
-      try {
-        const jsonResponse = JSON.parse(responseText);
-        if (jsonResponse.base_resp?.status_code === 0 && jsonResponse.data?.audio) {
-          // 将Base64音频数据转换为Buffer
-          const audioBuffer = Buffer.from(jsonResponse.data.audio, 'hex');
-          return new NextResponse(audioBuffer, {
-            headers: {
-              'Content-Type': 'audio/mp3',
-              'Content-Length': audioBuffer.length.toString(),
-              'Cache-Control': 'public, max-age=86400' // 24小时缓存
-            },
-          });
-        }
-        throw new Error(jsonResponse.base_resp?.status_msg || '语音生成失败');
-      } catch (parseError) {
-        console.error('Parse error:', parseError);
-        console.error('Response:', responseText);
-        throw new Error('无效的音频数据');
+      if (jsonResponse.base_resp?.status_code === 0 && jsonResponse.data?.audio) {
+        // 将Base64音频数据转换为Buffer
+        const audioBuffer = Buffer.from(jsonResponse.data.audio, 'hex');
+        return new NextResponse(audioBuffer, {
+          headers: {
+            'Content-Type': 'audio/mp3',
+            'Content-Length': audioBuffer.length.toString(),
+            'Cache-Control': 'public, max-age=86400' // 24小时缓存
+          },
+        });
       }
+      
+      throw new Error(jsonResponse.base_resp?.status_msg || '语音生成失败');
 
     } catch (fetchError: any) {
       if (fetchError.name === 'AbortError') {

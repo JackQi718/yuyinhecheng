@@ -9,7 +9,7 @@ datasource db {
 
 model Account {
   id                String  @id @default(cuid())
-  userId            Int
+  userId            String
   type              String
   provider          String
   providerAccountId String
@@ -29,7 +29,7 @@ model Account {
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
-  userId       Int
+  userId       String
   expires      DateTime
   user         users    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
@@ -44,7 +44,7 @@ model VerificationToken {
 
 model Subscription {
   id        String   @id @default(cuid())
-  userId    Int      @unique
+  userId    String   @unique
   planType  String
   startDate DateTime @default(now())
   endDate   DateTime
@@ -54,17 +54,29 @@ model Subscription {
 
 model CharacterQuota {
   id              String    @id @default(cuid())
-  userId          Int       @unique
-  permanentQuota  Int       @default(0)    // 永久额度（购买的）
-  temporaryQuota  Int       @default(0)    // 临时额度（赠送的和会员计划的）
+  userId          String    @unique
+  permanentQuota  Int       @default(0)
+  temporaryQuota  Int       @default(0)
   usedCharacters  Int       @default(0)
   lastUpdated     DateTime  @default(now())
-  quotaExpiry     DateTime? // 临时额度的过期时间
+  quotaExpiry     DateTime?
   user            users     @relation(fields: [userId], references: [id])
 }
 
+model ClonedVoice {
+  id          String   @id @default(cuid())
+  userId      String
+  voiceId     String
+  name        String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
 model users {
-  id                  Int             @id @default(autoincrement())
+  id                  String          @id @default(cuid())
   email               String          @unique
   password            String?
   name                String?
@@ -81,10 +93,34 @@ model users {
   lastLoginAt         DateTime?
   language            String          @default("zh")
   timezone            String?
-  totalCharactersUsed Int             @default(0)
+  totalCharactersUsed Int            @default(0)
   lastUsedAt          DateTime?
+  
+  // 克隆相关字段
+  remaining_clones    Int            @default(0)
+  total_clones        Int            @default(0)
+  used_clones         Int            @default(0)
+  
   subscription        Subscription?
   characterQuota      CharacterQuota?
-  accounts           Account[]
-  sessions           Session[]
+  accounts            Account[]
+  sessions            Session[]
+  payments            payment[]
+  clonedVoices        ClonedVoice[]
+}
+
+model payment {
+  id          String   @id @default(cuid())
+  userId      String
+  type        String
+  amount      Int
+  status      String
+  packageId   String
+  clone_count Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  user        users    @relation(fields: [userId], references: [id])
+
+  @@index([userId])
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -12,7 +12,8 @@ import { Volume2, Upload, Languages, Sun, Moon, Globe, Download, Pause, Play } f
 import { useTheme } from "next-themes";
 import { useToast } from "@/components/ui/use-toast";
 import { useLanguage } from "@/lib/i18n/language-context";
-import { synthesizeSpeech, playPollyAudio, hasSingleVoice, downloadAudio, SpeechService, minimaxLanguages, playMinimaxAudio } from "@/lib/polly-service";
+import { synthesizeSpeech, playPollyAudio, hasSingleVoice, downloadAudio, SpeechService, minimaxLanguages, playMinimaxAudio, SERVICE_LIMITS } from "@/lib/polly-service";
+import { getSupportedLanguages } from "@/lib/voice-config";
 import { useSpeech } from '@/hooks/use-speech';
 import { AudioVisualizer } from "@/components/audio-visualizer";
 import { NavBar } from "@/components/nav-bar";
@@ -20,10 +21,13 @@ import { motion } from "framer-motion";
 import { RequireAuth } from "@/components/require-auth";
 import { useSession } from "next-auth/react";
 import { useAnalytics } from '@/hooks/use-analytics';
+import { VoiceSelector } from '@/components/voice-selector';
+import { VoiceOption } from "@/lib/voice-config";
+import { VoiceId } from "@aws-sdk/client-polly";
 
 interface Language {
   code: string;
-  nameKey: 'chinese' | 'english' | 'japanese' | 'korean' | 'spanish' | 'french' | 'russian' | 'italian' | 'portuguese' | 'german' | 'indonesian' | 'arabic' | 'cantonese' | 'danish' | 'dutch' | 'finnish' | 'greek' | 'hebrew' | 'hindi' | 'hungarian' | 'norwegian' | 'polish' | 'romanian' | 'swedish' | 'turkish' | 'welsh';
+  nameKey: 'chinese' | 'english' | 'japanese' | 'korean' | 'spanish' | 'french' | 'russian' | 'italian' | 'portuguese' | 'german' | 'indonesian' | 'arabic' | 'cantonese' | 'danish' | 'dutch' | 'finnish' | 'greek' | 'hebrew' | 'hindi' | 'hungarian' | 'norwegian' | 'polish' | 'romanian' | 'swedish' | 'turkish' | 'welsh' | 'britishEnglish' | 'australianEnglish' | 'mexicanSpanish' | 'usSpanish' |  'canadianFrench' | 'belgianFrench' | 'brazilianPortuguese' | 'austrianGerman' | 'swissGerman' | 'uaeArabic' | 'belgianDutch' | 'indianEnglish' | 'welshEnglish' | 'irishEnglish' | 'newZealandEnglish' | 'southAfricanEnglish' | 'icelandic' | 'catalan' | 'czech' | 'vietnamese' | 'ukrainian' | 'afrikaans' | 'bulgarian' | 'croatian' | 'lithuanian' | 'latvian' | 'macedonian' | 'malay' | 'serbian' | 'slovak' | 'slovenian' | 'swahili' | 'tamil' | 'thai' | 'urdu' | 'traditionalChinese' | 'saudiArabic';
 }
 
 const MINIMAX_LANGUAGES = [
@@ -36,42 +40,194 @@ const MINIMAX_LANGUAGES = [
   { code: 'ru-RU', nameKey: 'russian' as const },
   { code: 'it-IT', nameKey: 'italian' as const },
   { code: 'pt-PT', nameKey: 'portuguese' as const },
-  { code: 'de-DE', nameKey: 'german' as const }
+  { code: 'de-DE', nameKey: 'german' as const },
+  { code: 'vi-VN', nameKey: 'vietnamese' as const },
+  { code: 'uk-UA', nameKey: 'ukrainian' as const },
+  { code: 'tr-TR', nameKey: 'turkish' as const },
+  { code: 'id-ID', nameKey: 'indonesian' as const },
+  { code: 'ar-SA', nameKey: 'arabic' as const }
 ] as const satisfies readonly Language[];
 
 const AWS_LANGUAGES: readonly Language[] = [
   { code: 'zh-CN', nameKey: 'chinese' as const },
   { code: 'en-US', nameKey: 'english' as const },
+  { code: 'en-GB', nameKey: 'britishEnglish' as const },
+  { code: 'en-AU', nameKey: 'australianEnglish' as const },
   { code: 'ja-JP', nameKey: 'japanese' as const },
   { code: 'ko-KR', nameKey: 'korean' as const },
   { code: 'es-ES', nameKey: 'spanish' as const },
+  { code: 'es-MX', nameKey: 'mexicanSpanish' as const },
+  { code: 'es-US', nameKey: 'usSpanish' as const },
   { code: 'fr-FR', nameKey: 'french' as const },
+  { code: 'fr-CA', nameKey: 'canadianFrench' as const },
+  { code: 'fr-BE', nameKey: 'belgianFrench' as const },
   { code: 'ru-RU', nameKey: 'russian' as const },
   { code: 'it-IT', nameKey: 'italian' as const },
   { code: 'pt-PT', nameKey: 'portuguese' as const },
+  { code: 'pt-BR', nameKey: 'brazilianPortuguese' as const },
   { code: 'de-DE', nameKey: 'german' as const },
+  { code: 'de-AT', nameKey: 'austrianGerman' as const },
+  { code: 'de-CH', nameKey: 'swissGerman' as const },
   { code: 'id-ID', nameKey: 'indonesian' as const },
   { code: 'arb', nameKey: 'arabic' as const },
+  { code: 'ar-AE', nameKey: 'uaeArabic' as const },
+  { code: 'ar-SA', nameKey: 'arabic' as const },
   { code: 'yue-CN', nameKey: 'cantonese' as const },
   { code: 'da-DK', nameKey: 'danish' as const },
   { code: 'nl-NL', nameKey: 'dutch' as const },
+  { code: 'nl-BE', nameKey: 'belgianDutch' as const },
   { code: 'fi-FI', nameKey: 'finnish' as const },
-  { code: 'el-GR', nameKey: 'greek' as const },
-  { code: 'he-IL', nameKey: 'hebrew' as const },
   { code: 'hi-IN', nameKey: 'hindi' as const },
-  { code: 'hu-HU', nameKey: 'hungarian' as const },
+  { code: 'en-IN', nameKey: 'indianEnglish' as const },
+  { code: 'en-GB-WLS', nameKey: 'welshEnglish' as const },
+  { code: 'en-IE', nameKey: 'irishEnglish' as const },
+  { code: 'en-NZ', nameKey: 'newZealandEnglish' as const },
+  { code: 'en-ZA', nameKey: 'southAfricanEnglish' as const },
+  { code: 'is-IS', nameKey: 'icelandic' as const },
   { code: 'nb-NO', nameKey: 'norwegian' as const },
   { code: 'pl-PL', nameKey: 'polish' as const },
   { code: 'ro-RO', nameKey: 'romanian' as const },
   { code: 'sv-SE', nameKey: 'swedish' as const },
   { code: 'tr-TR', nameKey: 'turkish' as const },
-  { code: 'cy-GB', nameKey: 'welsh' as const }
+  { code: 'cy-GB', nameKey: 'welsh' as const },
+  { code: 'ca-ES', nameKey: 'catalan' as const },
+  { code: 'cs-CZ', nameKey: 'czech' as const }
 ] as const;
 
-const SERVICE_LIMITS = {
-  aws: 100000,    // AWS Polly 最大支持 100,000 字符
-  minimax: 10000  // Minimax 最大支持 10,000 字符
+// OpenAI 支持的语言
+const OPENAI_LANGUAGES = [
+  { code: 'af-ZA', nameKey: 'afrikaans' as const },
+  { code: 'ar-AE', nameKey: 'uaeArabic' as const },
+  { code: 'ar-SA', nameKey: 'saudiArabic' as const },
+  { code: 'bg-BG', nameKey: 'bulgarian' as const },
+  { code: 'ca-ES', nameKey: 'catalan' as const },
+  { code: 'cs-CZ', nameKey: 'czech' as const },
+  { code: 'cy-GB', nameKey: 'welsh' as const },
+  { code: 'da-DK', nameKey: 'danish' as const },
+  { code: 'de-DE', nameKey: 'german' as const },
+  { code: 'el-GR', nameKey: 'greek' as const },
+  { code: 'en-AU', nameKey: 'australianEnglish' as const },
+  { code: 'en-GB', nameKey: 'britishEnglish' as const },
+  { code: 'en-GB-WLS', nameKey: 'welshEnglish' as const },
+  { code: 'en-IE', nameKey: 'irishEnglish' as const },
+  { code: 'en-IN', nameKey: 'indianEnglish' as const },
+  { code: 'en-NZ', nameKey: 'newZealandEnglish' as const },
+  { code: 'en-US', nameKey: 'english' as const },
+  { code: 'en-ZA', nameKey: 'southAfricanEnglish' as const },
+  { code: 'es-ES', nameKey: 'spanish' as const },
+  { code: 'es-MX', nameKey: 'mexicanSpanish' as const },
+  { code: 'es-US', nameKey: 'usSpanish' as const },
+  { code: 'fi-FI', nameKey: 'finnish' as const },
+  { code: 'fr-BE', nameKey: 'belgianFrench' as const },
+  { code: 'fr-CA', nameKey: 'canadianFrench' as const },
+  { code: 'fr-FR', nameKey: 'french' as const },
+  { code: 'he-IL', nameKey: 'hebrew' as const },
+  { code: 'hi-IN', nameKey: 'hindi' as const },
+  { code: 'hr-HR', nameKey: 'croatian' as const },
+  { code: 'hu-HU', nameKey: 'hungarian' as const },
+  { code: 'id-ID', nameKey: 'indonesian' as const },
+  { code: 'is-IS', nameKey: 'icelandic' as const },
+  { code: 'it-IT', nameKey: 'italian' as const },
+  { code: 'ja-JP', nameKey: 'japanese' as const },
+  { code: 'ko-KR', nameKey: 'korean' as const },
+  { code: 'lt-LT', nameKey: 'lithuanian' as const },
+  { code: 'lv-LV', nameKey: 'latvian' as const },
+  { code: 'mk-MK', nameKey: 'macedonian' as const },
+  { code: 'ms-MY', nameKey: 'malay' as const },
+  { code: 'nb-NO', nameKey: 'norwegian' as const },
+  { code: 'nl-BE', nameKey: 'belgianDutch' as const },
+  { code: 'nl-NL', nameKey: 'dutch' as const },
+  { code: 'pl-PL', nameKey: 'polish' as const },
+  { code: 'pt-BR', nameKey: 'brazilianPortuguese' as const },
+  { code: 'pt-PT', nameKey: 'portuguese' as const },
+  { code: 'ro-RO', nameKey: 'romanian' as const },
+  { code: 'ru-RU', nameKey: 'russian' as const },
+  { code: 'sk-SK', nameKey: 'slovak' as const },
+  { code: 'sl-SI', nameKey: 'slovenian' as const },
+  { code: 'sr-RS', nameKey: 'serbian' as const },
+  { code: 'sv-SE', nameKey: 'swedish' as const },
+  { code: 'sw-KE', nameKey: 'swahili' as const },
+  { code: 'ta-IN', nameKey: 'tamil' as const },
+  { code: 'th-TH', nameKey: 'thai' as const },
+  { code: 'tr-TR', nameKey: 'turkish' as const },
+  { code: 'uk-UA', nameKey: 'ukrainian' as const },
+  { code: 'ur-PK', nameKey: 'urdu' as const },
+  { code: 'vi-VN', nameKey: 'vietnamese' as const },
+  { code: 'zh-CN', nameKey: 'chinese' as const },
+  { code: 'zh-TW', nameKey: 'traditionalChinese' as const },
+  { code: 'yue-CN', nameKey: 'cantonese' as const }
+] as const;
+
+// 创建语言代码到翻译键的映射
+const languageCodeToNameKey: Record<string, string> = {
+  'zh-CN': 'chinese',
+  'en-US': 'english',
+  'en-GB': 'britishEnglish',
+  'en-AU': 'australianEnglish',
+  'ja-JP': 'japanese',
+  'ko-KR': 'korean',
+  'es-ES': 'spanish',
+  'es-MX': 'mexicanSpanish',
+  'es-US': 'usSpanish',
+  'fr-FR': 'french',
+  'fr-CA': 'canadianFrench',
+  'fr-BE': 'belgianFrench',
+  'ru-RU': 'russian',
+  'it-IT': 'italian',
+  'pt-PT': 'portuguese',
+  'pt-BR': 'brazilianPortuguese',
+  'de-DE': 'german',
+  'de-AT': 'austrianGerman',
+  'de-CH': 'swissGerman',
+  'id-ID': 'indonesian',
+  'arb': 'arabic',
+  'ar-AE': 'uaeArabic',
+  'ar-SA': 'saudiArabic',
+  'yue-CN': 'cantonese',
+  'da-DK': 'danish',
+  'nl-NL': 'dutch',
+  'nl-BE': 'belgianDutch',
+  'fi-FI': 'finnish',
+  'hi-IN': 'hindi',
+  'en-IN': 'indianEnglish',
+  'en-GB-WLS': 'welshEnglish',
+  'en-IE': 'irishEnglish',
+  'en-NZ': 'newZealandEnglish',
+  'en-ZA': 'southAfricanEnglish',
+  'is-IS': 'icelandic',
+  'nb-NO': 'norwegian',
+  'pl-PL': 'polish',
+  'ro-RO': 'romanian',
+  'sv-SE': 'swedish',
+  'tr-TR': 'turkish',
+  'cy-GB': 'welsh',
+  'ca-ES': 'catalan',
+  'cs-CZ': 'czech',
+  'vi-VN': 'vietnamese',
+  'uk-UA': 'ukrainian',
+  'af-ZA': 'afrikaans',
+  'bg-BG': 'bulgarian',
+  'hr-HR': 'croatian',
+  'lt-LT': 'lithuanian',
+  'lv-LV': 'latvian',
+  'mk-MK': 'macedonian',
+  'ms-MY': 'malay',
+  'sr-RS': 'serbian',
+  'sk-SK': 'slovak',
+  'sl-SI': 'slovenian',
+  'sw-KE': 'swahili',
+  'ta-IN': 'tamil',
+  'th-TH': 'thai',
+  'ur-PK': 'urdu',
+  'zh-TW': 'traditionalChinese'
 };
+
+// 使用从 polly-service.ts 导入的 SERVICE_LIMITS
+// const SERVICE_LIMITS = {
+//   aws: 100000,    // AWS Polly 最大支持 100,000 字符
+//   minimax: 10000,  // Minimax 最大支持 10,000 字符
+//   openai: 10000,  // OpenAI TTS 最大支持 10,000 字符
+// };
 
 export default function Home() {
   const { t, language, setLanguage } = useLanguage();
@@ -87,12 +243,15 @@ export default function Home() {
   const [lastGeneratedAudio, setLastGeneratedAudio] = useState<ArrayBuffer | null>(null);
   const { speak, isLoading, error, SUPPORTED_LANGUAGES } = useSpeech();
   const [speechService, setSpeechService] = useState<SpeechService>('aws');
+  const [selectedProvider, setSelectedProvider] = useState<'aws' | 'minimax' | 'openai'>('aws');
+  const prevSpeechServiceRef = useRef(speechService);
   const [audioVisualizer, setAudioVisualizer] = useState<{
     audioContext: AudioContext;
     source: AudioBufferSourceNode;
   } | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const { data: session } = useSession();
+  const [selectedVoice, setSelectedVoice] = useState<VoiceOption | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const analytics = useAnalytics();
 
@@ -119,12 +278,23 @@ export default function Home() {
     }
   }, [selectedLanguage, speechService]);
 
-  // 当切换到Minimax时，自动选择中文
+  // 当切换服务商时，自动选择合适的语言
   useEffect(() => {
-    if (speechService === 'minimax') {
-      setSelectedLanguage('zh-CN');
+    // 只在服务商变化时触发语言切换
+    if (prevSpeechServiceRef.current !== speechService) {
+      if (speechService === 'minimax') {
+        setSelectedLanguage('zh-CN');
+      } else if (speechService === 'openai') {
+        // 切换到 OpenAI 时默认选择英语
+        setSelectedLanguage('en-US');
+      } else if (speechService === 'aws' && selectedLanguage === 'zh-CN') {
+        // 如果从 Minimax 切换到 AWS，且当前是中文，则切换到英语
+        setSelectedLanguage('en-US');
+      }
+      
+      prevSpeechServiceRef.current = speechService;
     }
-  }, [speechService]);
+  }, [speechService, selectedLanguage]);
 
   // 处理文本输入，限制字符数
   const handleTextChange = (value: string) => {
@@ -134,7 +304,7 @@ export default function Home() {
     } else {
       toast({
         title: t("error"),
-        description: t("当前服务商最大支持 {limit} 字符", { limit: limit.toLocaleString() }),
+        description: t("serviceProviderCharacterLimit", { limit: limit.toLocaleString() }),
         variant: "destructive",
       });
     }
@@ -146,7 +316,7 @@ export default function Home() {
     if (text.length > limit) {
       setText(text.slice(0, limit));
       toast({
-        description: t("文本已超过当前服务商的字符限制，已自动截断"),
+        description: t("textTruncatedDueToLimit"),
         variant: "default",
       });
     }
@@ -162,6 +332,15 @@ export default function Home() {
         toast({
           title: t("noTextError"),
           description: t("pleaseEnterText"),
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (!selectedVoice) {
+        toast({
+          title: t("error"),
+          description: t("selectVoiceFirst"),
           variant: "destructive",
         });
         return;
@@ -193,38 +372,42 @@ export default function Home() {
           if (remainingQuota < text.length) {
             toast({
               title: t("error"),
-              description: t("字符额度不足"),
+              description: t("insufficientCharacterQuota"),
               variant: "destructive",
             });
             return;
           }
           quotaCheckPassed = true;
         } else {
-          console.error('获取用户配额失败，继续执行语音合成');
-          // 如果获取配额失败，记录错误但继续执行
+          console.error(t("quotaCheckFailed"));
           toast({
-            title: t("提示"),
-            description: "配额检查暂时不可用，但您仍可以使用语音合成功能",
+            title: t("notice"),
+            description: t("quotaCheckUnavailable"),
           });
         }
       } catch (error) {
-        console.error('配额检查出错，继续执行语音合成:', error);
+        console.error(t("quotaCheckError"), error);
         toast({
-          title: t("提示"),
-          description: "配额检查暂时不可用，但您仍可以使用语音合成功能",
+          title: t("notice"),
+          description: t("quotaCheckUnavailable"),
         });
       }
 
       const audioData = await synthesizeSpeech({
         text,
         language: selectedLanguage,
-        isFemale: isFemaleVoice,
+        voiceId: selectedVoice.id as VoiceId,
+        engine: selectedVoice.engine,
         speed,
         service: speechService
       });
 
       if (speechService === 'minimax') {
         const result = await playMinimaxAudio(audioData, speed);
+        setAudioVisualizer(result);
+        setIsPlaying(true);
+      } else if (speechService === 'openai') {
+        const result = await playPollyAudio(audioData, speed); // OpenAI 音频可以使用相同的播放函数
         setAudioVisualizer(result);
         setIsPlaying(true);
       } else {
@@ -238,6 +421,7 @@ export default function Home() {
       // 只有在配额检查成功的情况下才更新使用量
       if (quotaCheckPassed) {
         try {
+          // 统一处理所有语音服务的字符配额更新
           const updateResponse = await fetch('/api/user/update-quota', {
             method: 'POST',
             headers: {
@@ -249,15 +433,17 @@ export default function Home() {
           });
 
           if (!updateResponse.ok) {
-            console.error('更新字符使用量失败');
+            console.error(t("updateQuotaFailed"));
+          } else {
+            console.log(`字符配额更新成功，使用字符数: ${text.length}`);
           }
         } catch (error) {
-          console.error('更新字符使用量时出错:', error);
+          console.error(t("updateQuotaError"), error);
         }
       }
 
     } catch (error) {
-      console.error("Speech synthesis error:", error);
+      console.error(t("speechSynthesisError"), error);
       toast({
         title: t("error"),
         description: (error as Error).message || t("speechError"),
@@ -279,10 +465,30 @@ export default function Home() {
         return;
       }
 
+      if (!selectedVoice) {
+        toast({
+          title: t("error"),
+          description: t("selectVoiceFirst"),
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // 检查用户是否登录
+      if (!session?.user) {
+        toast({
+          title: t("loginRequired"),
+          description: t("loginToUseFeature"),
+          variant: "destructive",
+        });
+        return;
+      }
+
       const audioData = await synthesizeSpeech({
         text,
         language: selectedLanguage,
-        isFemale: isFemaleVoice,
+        voiceId: selectedVoice.id as VoiceId,
+        engine: selectedVoice.engine,
         speed,
         service: speechService
       });
@@ -291,10 +497,10 @@ export default function Home() {
       const filename = `audio_${selectedLanguage}_${timestamp}.mp3`;
       await downloadAudio(audioData, filename);
     } catch (error) {
-      console.error("Download error:", error);
+      console.error(t("downloadError"), error);
       toast({
         title: t("error"),
-        description: t("downloadError"),
+        description: error instanceof Error ? error.message : t("downloadError"),
         variant: "destructive",
       });
     }
@@ -361,6 +567,7 @@ export default function Home() {
   // 跟踪语音服务切换
   const handleServiceChange = (value: SpeechService) => {
     setSpeechService(value);
+    setSelectedProvider(value);
     analytics.trackEvent('change_service', 'settings', value);
   };
 
@@ -404,6 +611,7 @@ export default function Home() {
                         <SelectContent>
                           <SelectItem value="aws">AWS Polly</SelectItem>
                           <SelectItem value="minimax">Minimax</SelectItem>
+                          <SelectItem value="openai">OpenAI TTS</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -424,6 +632,13 @@ export default function Home() {
                                 {t(lang.nameKey)}
                               </SelectItem>
                             ))
+                          ) : speechService === 'openai' ? (
+                            // 使用 OpenAI 的语言列表
+                            OPENAI_LANGUAGES.map((lang) => (
+                              <SelectItem key={lang.code} value={lang.code}>
+                                {t(lang.nameKey)}
+                              </SelectItem>
+                            ))
                           ) : (
                             AWS_LANGUAGES.map((lang) => (
                               <SelectItem key={lang.code} value={lang.code}>
@@ -437,16 +652,14 @@ export default function Home() {
 
                     <div className="space-y-1.5 md:space-y-2">
                       <Label>{t('voice')}</Label>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm text-muted-foreground">
-                          {isFemaleVoice ? t('female') : t('male')}
-                        </span>
-                        <Switch
-                          checked={isFemaleVoice}
-                          onCheckedChange={setIsFemaleVoice}
-                          disabled={hasSingleVoice(selectedLanguage, speechService)}
+                      {selectedLanguage && (
+                        <VoiceSelector
+                          languageCode={selectedLanguage}
+                          onVoiceSelect={setSelectedVoice}
+                          selectedVoiceId={selectedVoice?.id}
+                          provider={selectedProvider}
                         />
-                      </div>
+                      )}
                     </div>
 
                     <div className="space-y-1.5 md:space-y-2">
@@ -582,4 +795,4 @@ export default function Home() {
       </main>
     </div>
   );
-} 
+}

@@ -28,10 +28,13 @@ import { ar } from './translations/ar'
 import { he } from './translations/he'
 import { hi } from './translations/hi'
 import { id } from './translations/id'
+import { cs } from './translations/cs'
+import { vi } from './translations/vi'
+import { uk } from './translations/uk'
 
 const translations = {
   en, zh, ja, ko, yue, es, fr, de, it, pt, ru, nl, sv, no, da,
-  fi, el, pl, ro, hu, tr, cy, ar, he, hi, id
+  fi, el, pl, ro, hu, tr, cy, ar, he, hi, id, cs, vi, uk,
 } as const;
 
 interface LanguageContextType {
@@ -60,9 +63,12 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   };
 
   const t = (key: string, params?: Record<string, string | number>) => {
-    const translation = translations[language][key];
+    // 确保语言存在于translations中，如果不存在则使用英语作为回退
+    const currentTranslations = translations[language as keyof typeof translations] || translations.en;
+    const translation = currentTranslations[key as keyof typeof currentTranslations];
     if (typeof translation === 'function') {
-      return translation(params || {});
+      // 确保translation是一个可调用的函数类型，并传递参数
+      return (translation as (params: Record<string, string | number>) => string)(params || {});
     }
     if (params) {
       return Object.entries(params).reduce(
@@ -86,4 +92,4 @@ export function useLanguage() {
     throw new Error('useLanguage must be used within a LanguageProvider')
   }
   return context
-} 
+}

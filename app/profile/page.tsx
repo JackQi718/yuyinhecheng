@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { SignOutButton } from "@/components/sign-out-button";
 import { useLanguage } from "@/lib/i18n/language-context";
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
@@ -15,6 +15,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { motion, AnimatePresence } from "framer-motion";
 import { useToast } from "@/components/ui/use-toast";
 import confetti from 'canvas-confetti';
+import { Button } from "@/components/ui/button";
 
 interface UserPlan {
   subscription?: {
@@ -29,6 +30,17 @@ interface UserPlan {
     lastUpdated: string;
     quotaExpiry?: string;
   };
+  cloneQuota?: {
+    remaining_clones: number;
+    total_clones: number;
+    used_clones: number;
+  };
+}
+
+interface CloneQuota {
+  remaining_clones: number;
+  total_clones: number;
+  used_clones: number;
 }
 
 export default function ProfilePage() {
@@ -41,6 +53,8 @@ export default function ProfilePage() {
   const [showConfetti, setShowConfetti] = useState(false);
   const searchParams = useSearchParams();
   const { toast } = useToast();
+  const success = searchParams.get('success');
+  const type = searchParams.get('type');
 
   const triggerConfetti = () => {
     const end = Date.now() + 1000;
@@ -81,7 +95,6 @@ export default function ProfilePage() {
       setUserPlan(data);
       
       // 检查是否是支付成功
-      const success = searchParams.get('success');
       if (success === 'true') {
         setShowConfetti(true);
         triggerConfetti();
@@ -108,10 +121,8 @@ export default function ProfilePage() {
   }, [session, router, sessionStatus]);
 
   useEffect(() => {
-    const success = searchParams.get('success');
-    if (success === 'true') {
+    if (success === 'true' && type) {
       // 获取购买类型
-      const type = searchParams.get('type');
       let toastMessage = {
         title: t('paymentSuccess'),
         description: t('refreshingData')
@@ -128,6 +139,11 @@ export default function ProfilePage() {
           title: t('purchaseSuccess'),
           description: t('quotaUpdated')
         };
+      } else if (type === 'clone') {
+        toastMessage = {
+          title: t('clonePackagePurchaseSuccess'),
+          description: t('updatingCloneCount')
+        };
       }
 
       toast({
@@ -137,13 +153,18 @@ export default function ProfilePage() {
         duration: 5000,
       });
       
-      // 支付成功时刷新一次数据
+      // 支付成功时立即刷新数据
       fetchUserPlan();
+      
+      // 1秒后再次刷新数据，以确保 webhook 处理完成
+      setTimeout(() => {
+        fetchUserPlan();
+      }, 1000);
       
       // 清除 URL 中的查询参数
       router.replace('/profile');
     }
-  }, [searchParams]);
+  }, [success, type]);
 
   // 清理撒花效果
   useEffect(() => {
@@ -184,7 +205,8 @@ export default function ProfilePage() {
     return new Date(dateString).toLocaleDateString();
   };
 
-  const formatNumber = (num: number) => {
+  const formatNumber = (num: number | undefined | null) => {
+    if (num === undefined || num === null) return '0';
     return num.toLocaleString();
   };
 
@@ -202,6 +224,12 @@ export default function ProfilePage() {
     const { permanentQuota, temporaryQuota, usedCharacters } = userPlan.characterQuota;
     const totalQuota = permanentQuota + temporaryQuota;
     return totalQuota > 0 ? (usedCharacters / totalQuota) * 100 : 0;
+  };
+
+  const getClonePercentage = () => {
+    if (!userPlan?.cloneQuota) return 0;
+    const { used_clones, total_clones } = userPlan.cloneQuota;
+    return total_clones > 0 ? (used_clones / total_clones) * 100 : 0;
   };
 
   const container = {
@@ -257,9 +285,9 @@ export default function ProfilePage() {
           variants={container}
           initial="hidden"
           animate="show"
-          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+          className="grid grid-cols-1 gap-6"
         >
-          <motion.div variants={item}>
+          <motion.div variants={item} className="md:col-span-2">
             <Card className="group hover:shadow-lg transition-all duration-300 hover:border-primary/50 bg-gradient-to-br from-background to-background/50 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -288,54 +316,208 @@ export default function ProfilePage() {
             </Card>
           </motion.div>
 
-          <motion.div variants={item}>
-            <Card className="group hover:shadow-lg transition-all duration-300 hover:border-primary/50 bg-gradient-to-br from-background to-background/50 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <CreditCard className="h-5 w-5 text-purple-500 group-hover:animate-bounce" />
-                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500">
-                    {t('subscription')}
-                  </span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {userPlan?.subscription ? (
-                  <>
-                    <div className="flex items-center justify-between group/item hover:bg-primary/5 p-2 rounded-lg transition-colors">
-                      <div className="flex items-center gap-2">
-                        <CreditCard className="h-4 w-4 text-purple-400 group-hover/item:text-purple-500 transition-colors" />
-                        <span className="text-muted-foreground group-hover/item:text-primary transition-colors">{t('currentPlan')}</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <motion.div variants={item}>
+              <Card className="group hover:shadow-lg transition-all duration-300 hover:border-primary/50 bg-gradient-to-br from-background to-background/50 backdrop-blur-sm">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <CreditCard className="h-5 w-5 text-purple-500 group-hover:animate-bounce" />
+                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500">
+                      {t('subscription')}
+                    </span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {userPlan?.subscription ? (
+                    <>
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">
+                            {getPlanName(userPlan.subscription.planType)}
+                          </span>
+                          <Badge 
+                            variant={userPlan.subscription.status === 'active' ? "default" : "destructive"}
+                            className={userPlan.subscription.status === 'active' ? "animate-gradient-x bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white" : ""}
+                          >
+                            {userPlan.subscription.status === 'active' ? t('active') : t('inactive')}
+                          </Badge>
+                        </div>
+                        <div className="relative h-2">
+                          <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full opacity-20"></div>
+                          <Progress value={userPlan.subscription.status === 'active' ? 100 : 0} className="relative z-10" />
+                        </div>
                       </div>
-                      <Badge 
-                        variant={userPlan.subscription.planType === 'trial' ? "secondary" : "default"}
-                        className="animate-gradient-x bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white"
-                      >
-                        {getPlanName(userPlan.subscription.planType)}
-                      </Badge>
-                    </div>
-                    <div className="flex items-center justify-between group/item hover:bg-primary/5 p-2 rounded-lg transition-colors">
-                      <div className="flex items-center gap-2">
-                        <Activity className="h-4 w-4 text-pink-400 group-hover/item:text-pink-500 transition-colors" />
-                        <span className="text-muted-foreground group-hover/item:text-primary transition-colors">{t('planStatus')}</span>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="flex flex-col gap-1 p-4 rounded-lg bg-gradient-to-br from-blue-500/10 to-purple-500/10 hover:from-blue-500/20 hover:to-purple-500/20 transition-colors">
+                          <span className="text-muted-foreground text-sm">{t('currentPlan')}</span>
+                          <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500">
+                            {getPlanName(userPlan.subscription.planType)}
+                          </span>
+                        </div>
+                        <div className="flex flex-col gap-1 p-4 rounded-lg bg-gradient-to-br from-purple-500/10 to-pink-500/10 hover:from-purple-500/20 hover:to-pink-500/20 transition-colors">
+                          <span className="text-muted-foreground text-sm">{t('planStatus')}</span>
+                          <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500">
+                            {userPlan.subscription.status === 'active' ? t('active') : t('inactive')}
+                          </span>
+                        </div>
+                        <div className="flex flex-col gap-1 p-4 rounded-lg bg-gradient-to-br from-pink-500/10 to-red-500/10 hover:from-pink-500/20 hover:to-red-500/20 transition-colors">
+                          <span className="text-muted-foreground text-sm">{t('expiryDate')}</span>
+                          <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-red-500">
+                            {formatDate(userPlan.subscription.endDate)}
+                          </span>
+                        </div>
                       </div>
-                      <Badge variant={userPlan.subscription.status === 'active' ? "default" : "destructive"}>
-                        {userPlan.subscription.status === 'active' ? t('active') : t('inactive')}
-                      </Badge>
-                    </div>
-                    <div className="flex items-center justify-between group/item hover:bg-primary/5 p-2 rounded-lg transition-colors">
-                      <div className="flex items-center gap-2">
-                        <Calendar className="h-4 w-4 text-indigo-400 group-hover/item:text-indigo-500 transition-colors" />
-                        <span className="text-muted-foreground group-hover/item:text-primary transition-colors">{t('expiryDate')}</span>
+                      <div className="flex items-center justify-between pt-4 border-t group/item hover:bg-primary/5 p-2 rounded-lg transition-colors">
+                        <div className="flex items-center gap-2">
+                          <Clock className="h-4 w-4 text-red-400 group-hover/item:text-red-500 transition-colors" />
+                          <span className="text-muted-foreground group-hover/item:text-primary transition-colors">{t('expiryDate')}</span>
+                        </div>
+                        <span>{formatDate(userPlan.subscription.endDate)}</span>
                       </div>
-                      <span className="font-medium">{formatDate(userPlan.subscription.endDate)}</span>
-                    </div>
-                  </>
-                ) : (
-                  <div className="text-center text-muted-foreground py-4">{t('noPlan')}</div>
-                )}
-              </CardContent>
-            </Card>
-          </motion.div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">{t('notSubscribed')}</span>
+                          <Badge variant="destructive">{t('notActivated')}</Badge>
+                        </div>
+                        <div className="relative h-2">
+                          <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full opacity-20"></div>
+                          <Progress value={0} className="relative z-10" />
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="flex flex-col gap-1 p-4 rounded-lg bg-gradient-to-br from-blue-500/10 to-purple-500/10 hover:from-blue-500/20 hover:to-purple-500/20 transition-colors">
+                          <span className="text-muted-foreground text-sm">{t('currentPlan')}</span>
+                          <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500">
+                            {t('notSubscribed')}
+                          </span>
+                        </div>
+                        <div className="flex flex-col gap-1 p-4 rounded-lg bg-gradient-to-br from-purple-500/10 to-pink-500/10 hover:from-purple-500/20 hover:to-pink-500/20 transition-colors">
+                          <span className="text-muted-foreground text-sm">{t('planStatus')}</span>
+                          <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500">
+                            {t('notActivated')}
+                          </span>
+                        </div>
+                        <div className="flex flex-col gap-1 p-4 rounded-lg bg-gradient-to-br from-pink-500/10 to-red-500/10 hover:from-pink-500/20 hover:to-red-500/20 transition-colors">
+                          <span className="text-muted-foreground text-sm">{t('expiryDate')}</span>
+                          <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-red-500">
+                            -
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between pt-4 border-t group/item hover:bg-primary/5 p-2 rounded-lg transition-colors">
+                        <div className="flex items-center gap-2">
+                          <Clock className="h-4 w-4 text-red-400 group-hover/item:text-red-500 transition-colors" />
+                          <span className="text-muted-foreground group-hover/item:text-primary transition-colors">{t('expiryDate')}</span>
+                        </div>
+                        <span>-</span>
+                      </div>
+                    </>
+                  )}
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            <motion.div variants={item}>
+              <Card className="group hover:shadow-lg transition-all duration-300 hover:border-primary/50 bg-gradient-to-br from-background to-background/50 backdrop-blur-sm">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Activity className="h-5 w-5 text-pink-500 group-hover:animate-bounce" />
+                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-red-500">
+                      {t('cloneQuota')}
+                    </span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {userPlan?.cloneQuota ? (
+                    <>
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">
+                            {formatNumber(userPlan.cloneQuota.used_clones)} / {formatNumber(userPlan.cloneQuota.total_clones)} {t('times')}
+                          </span>
+                          <span className="font-medium">{Math.round(getClonePercentage())}%</span>
+                        </div>
+                        <div className="relative h-2">
+                          <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full opacity-20"></div>
+                          <Progress value={getClonePercentage()} className="relative z-10" />
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="flex flex-col gap-1 p-4 rounded-lg bg-gradient-to-br from-blue-500/10 to-purple-500/10 hover:from-blue-500/20 hover:to-purple-500/20 transition-colors">
+                          <span className="text-muted-foreground text-sm">{t('totalClones')}</span>
+                          <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500">
+                            {formatNumber(userPlan.cloneQuota.total_clones)}
+                          </span>
+                        </div>
+                        <div className="flex flex-col gap-1 p-4 rounded-lg bg-gradient-to-br from-purple-500/10 to-pink-500/10 hover:from-purple-500/20 hover:to-pink-500/20 transition-colors">
+                          <span className="text-muted-foreground text-sm">{t('usedClones')}</span>
+                          <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500">
+                            {formatNumber(userPlan.cloneQuota.used_clones)}
+                          </span>
+                        </div>
+                        <div className="flex flex-col gap-1 p-4 rounded-lg bg-gradient-to-br from-pink-500/10 to-red-500/10 hover:from-pink-500/20 hover:to-red-500/20 transition-colors">
+                          <span className="text-muted-foreground text-sm">{t('remainingClones')}</span>
+                          <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-red-500">
+                            {formatNumber(userPlan.cloneQuota.remaining_clones)}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between pt-4 border-t group/item hover:bg-primary/5 p-2 rounded-lg transition-colors">
+                        <div className="flex items-center gap-2">
+                          <Clock className="h-4 w-4 text-red-400 group-hover/item:text-red-500 transition-colors" />
+                          <span className="text-muted-foreground group-hover/item:text-primary transition-colors">{t('lastUpdated')}</span>
+                        </div>
+                        <span>{formatDate(userPlan.characterQuota?.lastUpdated || new Date().toISOString())}</span>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">0 / 0 {t('times')}</span>
+                          <span className="font-medium">0%</span>
+                        </div>
+                        <div className="relative h-2">
+                          <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full opacity-20"></div>
+                          <Progress value={0} className="relative z-10" />
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="flex flex-col gap-1 p-4 rounded-lg bg-gradient-to-br from-blue-500/10 to-purple-500/10 hover:from-blue-500/20 hover:to-purple-500/20 transition-colors">
+                          <span className="text-muted-foreground text-sm">{t('totalClones')}</span>
+                          <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500">
+                            0
+                          </span>
+                        </div>
+                        <div className="flex flex-col gap-1 p-4 rounded-lg bg-gradient-to-br from-purple-500/10 to-pink-500/10 hover:from-purple-500/20 hover:to-pink-500/20 transition-colors">
+                          <span className="text-muted-foreground text-sm">{t('usedClones')}</span>
+                          <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500">
+                            0
+                          </span>
+                        </div>
+                        <div className="flex flex-col gap-1 p-4 rounded-lg bg-gradient-to-br from-pink-500/10 to-red-500/10 hover:from-pink-500/20 hover:to-red-500/20 transition-colors">
+                          <span className="text-muted-foreground text-sm">{t('remainingClones')}</span>
+                          <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-red-500">
+                            0
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between pt-4 border-t group/item hover:bg-primary/5 p-2 rounded-lg transition-colors">
+                        <div className="flex items-center gap-2">
+                          <Clock className="h-4 w-4 text-red-400 group-hover/item:text-red-500 transition-colors" />
+                          <span className="text-muted-foreground group-hover/item:text-primary transition-colors">{t('lastUpdated')}</span>
+                        </div>
+                        <span>{formatDate(new Date().toISOString())}</span>
+                      </div>
+                    </>
+                  )}
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
 
           <motion.div variants={item} className="md:col-span-2">
             <Card className="group hover:shadow-lg transition-all duration-300 hover:border-primary/50 bg-gradient-to-br from-background to-background/50 backdrop-blur-sm">

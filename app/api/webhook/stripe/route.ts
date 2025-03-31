@@ -53,6 +53,7 @@ export async function POST(req: Request) {
           // 从会话中直接获取客户邮箱
           const email = session.customer_details?.email;
           if (!email) {
+            console.error('未找到客户邮箱');
             throw new Error('未找到客户邮箱');
           }
 
@@ -66,15 +67,17 @@ export async function POST(req: Request) {
           });
 
           if (!user) {
+            console.error('未找到用户:', email);
             throw new Error('未找到用户');
           }
-          console.log('找到用户:', user.id);
+          console.log('找到用户:', user.id, '当前订阅状态:', user.subscription);
 
           const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
           console.log('订单项目:', JSON.stringify(lineItems, null, 2));
           
           const priceId = lineItems.data[0]?.price?.id;
           if (!priceId) {
+            console.error('未找到价格 ID');
             throw new Error('未找到价格 ID');
           }
           console.log('价格 ID:', priceId);
@@ -82,12 +85,86 @@ export async function POST(req: Request) {
           // 根据价格 ID 确定计划类型和字符额度
           const planDetails = getPlanDetailsFromPriceId(priceId);
           console.log('计划详情:', planDetails);
+          console.log('环境变量价格 ID:', {
+            STRIPE_CLONE_1_PRICE_ID: process.env.STRIPE_CLONE_1_PRICE_ID,
+            STRIPE_CLONE_10_PRICE_ID: process.env.STRIPE_CLONE_10_PRICE_ID,
+            STRIPE_CLONE_50_PRICE_ID: process.env.STRIPE_CLONE_50_PRICE_ID
+          });
 
-          if (planDetails.type === 'subscription') {
+          if (planDetails.type === 'clone' && planDetails.clone_count) {
+            console.log('处理克隆包购买, 数量:', planDetails.clone_count);
+            console.log('价格 ID:', priceId);
+            console.log('用户 ID:', user.id);
+            
+            try {
+              // 更新用户的克隆次数
+              console.log('更新前的用户克隆次数:', {
+                id: user.id,
+                remaining_clones: user.remaining_clones,
+                total_clones: user.total_clones,
+                used_clones: user.used_clones
+              });
+              
+              const updatedUser = await prisma.users.update({
+                where: { id: user.id },
+                data: {
+                  remaining_clones: {
+                    increment: planDetails.clone_count
+                  },
+                  total_clones: {
+                    increment: planDetails.clone_count
+                  }
+                },
+                select: {
+                  id: true,
+                  remaining_clones: true,
+                  total_clones: true,
+                  used_clones: true
+                }
+              });
+              
+              console.log('更新后的用户克隆次数:', {
+                id: updatedUser.id,
+                remaining_clones: updatedUser.remaining_clones,
+                total_clones: updatedUser.total_clones,
+                used_clones: updatedUser.used_clones
+              });
+
+              // 创建支付记录
+              console.log('创建支付记录, 参数:', {
+                userId: user.id,
+                type: 'clone',
+                amount: session.amount_total,
+                packageId: priceId,
+                clone_count: planDetails.clone_count
+              });
+
+              const payment = await prisma.payment.create({
+                data: {
+                  id: session.id, // 使用 session.id 作为支付记录的唯一标识
+                  userId: user.id,
+                  type: 'clone',
+                  amount: session.amount_total || 0,
+                  status: 'completed',
+                  packageId: priceId,
+                  clone_count: planDetails.clone_count
+                }
+              });
+              console.log('创建的支付记录:', payment);
+
+            } catch (error) {
+              console.error('更新克隆次数或创建支付记录时出错:', error);
+              throw error;
+            }
+
+            console.log('克隆包购买处理完成');
+            break;
+          } else if (planDetails.type === 'subscription') {
             if (!planDetails.planType || !planDetails.endDate) {
               throw new Error('订阅计划类型或结束日期未定义');
             }
-            console.log('更新订阅信息');
+            console.log('开始更新订阅信息');
+            console.log('当前用户订阅状态:', user.subscription);
 
             // 获取现有订阅信息
             const existingSubscription = user.subscription;
@@ -108,7 +185,7 @@ export async function POST(req: Request) {
                 console.log('现有订阅剩余天数:', remainingDays);
 
                 // 新订阅的天数
-                const addDays = planDetails.planType === 'yearly' ? 365 : 30;
+                const addDays = planDetails.planType === 'yearly' ? 365 : 31;
                 console.log('新订阅天数:', addDays);
 
                 // 累加天数
@@ -118,21 +195,22 @@ export async function POST(req: Request) {
               }
             }
 
-            await prisma.subscription.upsert({
+            const updatedSubscription = await prisma.subscription.upsert({
               where: { userId: user.id },
               update: {
-                planType: newPlanType, // 使用可能更新后的计划类型
+                planType: newPlanType,
                 endDate: newEndDate,
                 status: 'active',
               },
               create: {
                 userId: user.id,
-                planType: newPlanType, // 使用可能更新后的计划类型
+                planType: newPlanType,
                 startDate: new Date(),
                 endDate: newEndDate,
                 status: 'active',
               },
             });
+            console.log('更新后的订阅信息:', updatedSubscription);
 
             console.log('更新字符额度');
             const existingQuota = user.characterQuota;
@@ -263,6 +341,13 @@ export async function POST(req: Request) {
         case 'invoice.payment_succeeded': {
           console.log('处理 invoice.payment_succeeded 事件');
           const invoice = event.data.object as Stripe.Invoice;
+          
+          // 检查是否是首次订阅支付，如果是则跳过处理（因为已经在 checkout.session.completed 中处理过）
+          if (invoice.billing_reason === 'subscription_create') {
+            console.log('跳过首次订阅支付的处理（已在 checkout.session.completed 中处理）');
+            break;
+          }
+
           const customerId = invoice.customer as string;
           const customer = await stripe.customers.retrieve(customerId) as Stripe.Customer;
           const email = customer.email;
@@ -310,7 +395,7 @@ export async function POST(req: Request) {
                   console.log('现有订阅剩余天数:', remainingDays);
 
                   // 新订阅的天数
-                  const addDays = planDetails.planType === 'yearly' ? 365 : 30;
+                  const addDays = planDetails.planType === 'yearly' ? 365 : 31;
                   console.log('新订阅天数:', addDays);
 
                   // 累加天数
@@ -324,13 +409,13 @@ export async function POST(req: Request) {
               await prisma.subscription.upsert({
                 where: { userId: user.id },
                 update: {
-                  planType: newPlanType, // 使用可能更新后的计划类型
+                  planType: newPlanType,
                   endDate: newEndDate,
                   status: 'active',
                 },
                 create: {
                   userId: user.id,
-                  planType: newPlanType, // 使用可能更新后的计划类型
+                  planType: newPlanType,
                   startDate: new Date(),
                   endDate: newEndDate,
                   status: 'active',
@@ -427,14 +512,18 @@ export async function POST(req: Request) {
 }
 
 function getPlanDetailsFromPriceId(priceId: string): {
-  type: 'subscription' | 'oneTime';
+  type: 'subscription' | 'oneTime' | 'clone';
   planType?: string;
   endDate?: Date;
-  characters: number;
+  characters?: number;
+  clone_count?: number;
 } {
   const now = new Date();
-  const oneYear = new Date(now.setFullYear(now.getFullYear() + 1));
-  const oneMonth = new Date(now.setMonth(now.getMonth() + 1));
+  const oneYear = new Date(now);
+  oneYear.setFullYear(oneYear.getFullYear() + 1);
+  
+  const oneMonth = new Date(now);
+  oneMonth.setDate(oneMonth.getDate() + 31);
 
   switch (priceId) {
     case process.env.STRIPE_YEARLY_PRICE_ID:
@@ -454,7 +543,7 @@ function getPlanDetailsFromPriceId(priceId: string): {
     case process.env.STRIPE_10K_PRICE_ID:
       return {
         type: 'oneTime',
-        characters: 10000,
+        characters: 100000,
       };
     case process.env.STRIPE_1M_PRICE_ID:
       return {
@@ -465,6 +554,21 @@ function getPlanDetailsFromPriceId(priceId: string): {
       return {
         type: 'oneTime',
         characters: 3000000,
+      };
+    case process.env.STRIPE_CLONE_1_PRICE_ID:
+      return {
+        type: 'clone',
+        clone_count: 1,
+      };
+    case process.env.STRIPE_CLONE_10_PRICE_ID:
+      return {
+        type: 'clone',
+        clone_count: 10,
+      };
+    case process.env.STRIPE_CLONE_50_PRICE_ID:
+      return {
+        type: 'clone',
+        clone_count: 50,
       };
     default:
       throw new Error('无效的价格 ID');

@@ -18,10 +18,10 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL('https://voicecanvas.org'),
   title: {
-    default: 'VoiceCanvas - Advanced AI-Powered Multilingual Voice Synthesis Platform',
+    default: 'VoiceCanvas - Advanced AI-Powered Multilingual Voice Synthesis & Voice Cloning Platform',
     template: '%s | VoiceCanvas'
   },
-  description: 'Experience state-of-the-art neural voice synthesis in 25+ languages. Professional-grade text-to-speech platform with advanced AI technology, offering crystal-clear audio quality and natural language processing.',
+  description: 'Experience state-of-the-art neural voice synthesis and voice cloning in 40+ languages. Professional-grade text-to-speech platform with advanced AI technology, offering crystal-clear audio quality, natural language processing, and personalized voice cloning capabilities.',
   keywords: [
     // 英文关键词
     'text to speech',
@@ -181,7 +181,49 @@ export const metadata: Metadata = {
     'AI enhancement',
     'voice cloning',
     'emotion synthesis',
-    'accent control'
+    'accent control',
+    
+    // 声音克隆相关关键词
+    'voice cloning',
+    'voice replication',
+    'voice copying',
+    'voice model',
+    'voice avatar',
+    'custom voice',
+    'personalized voice',
+    'voice identity',
+    'voice twin',
+    'voice duplication',
+    'AI voice cloning',
+    'neural voice cloning',
+    'voice clone technology',
+    'voice sample',
+    'voice bank',
+    
+    // 中文声音克隆关键词
+    '声音克隆',
+    '声音复制',
+    '声音模仿',
+    '声音模型',
+    '个性化声音',
+    '声音定制',
+    '声音样本',
+    '声音库',
+    '智能配音克隆',
+    '语音克隆技术',
+    
+    // 日文声音克隆关键词
+    '音声クローン',
+    '声のクローン',
+    'ボイスクローン',
+    '音声複製',
+    'カスタムボイス',
+    
+    // 韩文声音克隆关键词
+    '음성 복제',
+    '목소리 복제',
+    '음성 클론',
+    '맞춤형 음성',
   ],
   authors: [{ name: 'ItusiAI' }],
   creator: 'ItusiAI',
@@ -201,23 +243,28 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     url: 'https://voicecanvas.org',
-    title: 'VoiceCanvas - Advanced AI-Powered Multilingual Voice Synthesis Platform',
-    description: 'Experience state-of-the-art neural voice synthesis in 25+ languages. Professional-grade text-to-speech platform with advanced AI technology, offering crystal-clear audio quality and natural language processing.',
+    title: 'VoiceCanvas - Advanced AI-Powered Multilingual Voice Synthesis & Voice Cloning Platform',
+    description: 'Experience state-of-the-art neural voice synthesis and voice cloning in 40+ languages. Professional-grade text-to-speech platform with advanced AI technology, offering crystal-clear audio quality, natural language processing, and personalized voice cloning capabilities.',
     siteName: 'VoiceCanvas',
     images: [
       {
-        url: 'https://voicecanvas.org/images/og-image',
+        url: 'https://voicecanvas.org/images/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'VoiceCanvas - AI Voice Synthesis Platform',
+        alt: 'VoiceCanvas - AI Voice Synthesis & Cloning Platform',
       }
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'VoiceCanvas - Advanced AI-Powered Multilingual Voice Synthesis Platform',
-    description: 'Experience state-of-the-art neural voice synthesis in 25+ languages. Professional-grade text-to-speech platform with advanced AI technology, offering crystal-clear audio quality and natural language processing.',
-    images: ['https://voicecanvas.org/images/og-image'],
+    title: 'VoiceCanvas - Advanced AI-Powered Multilingual Voice Synthesis & Voice Cloning Platform',
+    description: 'Experience state-of-the-art neural voice synthesis and voice cloning in 40+ languages. Professional-grade text-to-speech platform with advanced AI technology, offering crystal-clear audio quality, natural language processing, and personalized voice cloning capabilities.',
+    images: {
+      url: 'https://voicecanvas.org/images/og-image.png',
+      alt: 'VoiceCanvas - AI Voice Synthesis & Cloning Platform',
+      width: 1200,
+      height: 630
+    },
     creator: '@VoiceCanvas',
     site: '@VoiceCanvas',
   },

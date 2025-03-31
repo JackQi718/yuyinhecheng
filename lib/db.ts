@@ -1,6 +1,10 @@
 import { neon } from '@neondatabase/serverless';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import { createId } from '@paralleldrive/cuid2';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 if (!process.env.DATABASE_URL) {
   throw new Error('DATABASE_URL 环境变量未设置');
@@ -65,6 +69,7 @@ export async function createUser(data: {
     console.log('用户数据:', { ...data, password: data.password ? '***' : undefined });
     
     const { email, password, name, image, provider, providerId } = data;
+    const id = createId();
     
     // 先检查用户是否已存在
     const existingUser = await getUserByEmail(email);
@@ -75,10 +80,10 @@ export async function createUser(data: {
     
     // 使用 RETURNING * 来获取所有插入的数据
     const result = await query(
-      `INSERT INTO users (email, password, name, image, provider, provider_id) 
-       VALUES ($1, $2, $3, $4, $5, $6) 
+      `INSERT INTO users (id, email, password, name, image, provider, provider_id) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7) 
        RETURNING *`,
-      [email, password, name || null, image || null, provider || null, providerId || null]
+      [id, email, password, name || null, image || null, provider || null, providerId || null]
     );
     
     if (!result || result.length === 0) {
@@ -126,3 +131,58 @@ export async function getUserById(id: string) {
     throw error;
   }
 } 
+
+// 更新用户的字符配额
+export async function updateCharacterQuota(userId: string, usedCharacters: number) {
+  try {
+    console.log('更新用户字符配额:', { userId, usedCharacters });
+    
+    // 使用Prisma客户端查询用户和字符配额
+    const user = await prisma.users.findUnique({
+      where: { id: userId },
+      include: { characterQuota: true }
+    });
+    
+    if (!user) {
+      throw new Error('用户不存在');
+    }
+    
+    // 如果用户没有字符配额记录，创建一个新的
+    if (!user.characterQuota) {
+      await prisma.characterQuota.create({
+        data: {
+          userId: userId,
+          permanentQuota: 0,
+          temporaryQuota: 0,
+          usedCharacters: usedCharacters,
+          lastUpdated: new Date()
+        }
+      });
+    } else {
+      // 更新已有的字符配额记录
+      const newUsedCharacters = user.characterQuota.usedCharacters + usedCharacters;
+      
+      await prisma.characterQuota.update({
+        where: { userId: userId },
+        data: {
+          usedCharacters: newUsedCharacters,
+          lastUpdated: new Date()
+        }
+      });
+    }
+    
+    // 只更新用户的最后使用时间，不更新totalCharactersUsed字段
+    await prisma.users.update({
+      where: { id: userId },
+      data: { 
+        lastUsedAt: new Date()
+      }
+    });
+    
+    console.log('字符配额更新成功');
+    return true;
+  } catch (error) {
+    console.error('更新字符配额失败:', error);
+    throw error;
+  }
+}

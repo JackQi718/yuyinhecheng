@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Voice Studio - Professional Voice Synthesis Workspace',
-  description: 'Create professional-grade voice content with our advanced AI voice synthesis studio. Features real-time preview, multi-voice support, and precise control over speed, pitch, and emotion.',
+  title: 'VoiceCanvas Studio - Professional AI Voice Synthesis & Voice Cloning Workspace',
+  description: 'Create professional-grade voice content with our advanced AI voice synthesis and cloning studio. Features real-time preview, multi-voice support, precise control over speed, pitch, and personalized voice cloning capabilities.',
   metadataBase: new URL('https://voicecanvas.org'),
   icons: {
     icon: '/favicon.ico',
@@ -14,36 +14,29 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: 'Voice Studio - Professional Voice Synthesis Workspace',
-    description: 'Create professional-grade voice content with our advanced AI voice synthesis studio. Features real-time preview, multi-voice support, and precise control over speed, pitch, and emotion.',
-    url: 'https://voicecanvas.org',
+    title: 'VoiceCanvas Studio - Professional AI Voice Synthesis & Voice Cloning Workspace',
+    description: 'Create professional-grade voice content with our advanced AI voice synthesis and cloning studio. Features real-time preview, multi-voice support, precise control over speed, pitch, and personalized voice cloning capabilities.',
+    url: 'https://voicecanvas.org/app',
     siteName: 'VoiceCanvas',
     locale: 'en_US',
     type: 'website',
     images: [
       {
-        url: '/images/studio-og.png',
+        url: 'https://voicecanvas.org/images/studio-og.png',
         width: 1200,
         height: 630,
-        alt: 'VoiceCanvas Studio Interface',
-        type: 'image/png'
-      },
-      {
-        url: '/images/studio-og-square.png',
-        width: 1080,
-        height: 1080,
-        alt: 'VoiceCanvas Studio Interface Square',
+        alt: 'VoiceCanvas Studio - AI Voice Synthesis & Cloning Platform',
         type: 'image/png'
       }
     ]
   },
   twitter: {
-    title: 'Voice Studio - Professional Voice Synthesis Workspace',
-    description: 'Create professional-grade voice content with our advanced AI voice synthesis studio. Features real-time preview, multi-voice support, and precise control over speed, pitch, and emotion.',
+    title: 'VoiceCanvas Studio - Professional AI Voice Synthesis & Voice Cloning Workspace',
+    description: 'Create professional-grade voice content with our advanced AI voice synthesis and cloning studio. Features real-time preview, multi-voice support, precise control over speed, pitch, and personalized voice cloning capabilities.',
     card: 'summary_large_image',
     images: {
-      url: '/images/studio-twitter.png',
-      alt: 'VoiceCanvas Studio Interface',
+      url: 'https://voicecanvas.org/images/studio-og.png',
+      alt: 'VoiceCanvas Studio - AI Voice Synthesis & Cloning Platform',
       width: 1200,
       height: 630
     },

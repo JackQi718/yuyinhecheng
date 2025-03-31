@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Mic2, Globe2, Sparkles, ArrowRight, Volume2, Settings, FileText, Star, Pause, Play, Download, Upload, Crown, Rocket } from "lucide-react";
+import { Mic2, Globe2, Sparkles, ArrowRight, Volume2, Settings, FileText, Star, Pause, Play, Download, Upload, Crown, Rocket, UserSquare2 } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
@@ -31,26 +31,15 @@ export default function LandingPage() {
       icon: <Sparkles className="h-6 w-6" />,
       title: t('feature3Title'),
       description: t('feature3Desc')
+    },
+    {
+      icon: <UserSquare2 className="h-6 w-6" />,
+      title: t('feature4Title'),
+      description: t('feature4Desc')
     }
   ];
 
-  const steps = [
-    {
-      icon: <FileText className="h-6 w-6" />,
-      title: t('step1Title'),
-      description: t('step1Desc')
-    },
-    {
-      icon: <Settings className="h-6 w-6" />,
-      title: t('step2Title'),
-      description: t('step2Desc')
-    },
-    {
-      icon: <Volume2 className="h-6 w-6" />,
-      title: t('step3Title'),
-      description: t('step3Desc')
-    }
-  ];
+  const steps: { icon: React.ReactNode; title: string; description: string; }[] = [];
 
   const testimonials = [
     {
@@ -86,6 +75,27 @@ export default function LandingPage() {
       name: t('testimonial5Name'),
       role: t('testimonial5Role'),
       content: t('testimonial5Content'),
+      rating: 5
+    },
+    {
+      avatar: "Y",
+      name: t('testimonial6Name'),
+      role: t('testimonial6Role'),
+      content: t('testimonial6Content'),
+      rating: 5
+    },
+    {
+      avatar: "K",
+      name: t('testimonial7Name'),
+      role: t('testimonial7Role'),
+      content: t('testimonial7Content'),
+      rating: 5
+    },
+    {
+      avatar: "H",
+      name: t('testimonial8Name'),
+      role: t('testimonial8Role'),
+      content: t('testimonial8Content'),
       rating: 5
     }
   ];
@@ -198,6 +208,9 @@ export default function LandingPage() {
             <span className="px-2 py-1 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20 text-blue-500 dark:text-blue-400 font-medium">
               {t('aiPowered')}
             </span>
+            <span className="px-2 py-1 rounded-full bg-gradient-to-r from-green-500/10 to-teal-500/10 border border-green-500/20 text-green-500 dark:text-green-400 font-medium">
+              {t('voiceCloning')}
+            </span>
             <span className="px-2 py-1 rounded-full bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-pink-500/20 text-pink-500 dark:text-pink-400 font-medium">
               {t('languagesSupported')}
             </span>
@@ -227,6 +240,16 @@ export default function LandingPage() {
               <ArrowRight className="h-4 w-4 md:h-5 md:w-5" />
             </Button>
           </Link>
+          <Link href="/cloning/" className="w-full md:w-auto">
+            <Button 
+              size="lg" 
+              className="w-full md:w-auto h-10 md:h-12 text-sm md:text-base gap-2 bg-gradient-to-r from-green-400 via-emerald-500 to-teal-500 hover:from-green-500 hover:via-emerald-600 hover:to-teal-600 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/25 hover:-translate-y-0.5"
+            >
+              <Mic2 className="h-4 w-4 md:h-5 md:w-5 animate-pulse" />
+              {t('voiceCloning')}
+              <ArrowRight className="h-4 w-4 md:h-5 md:w-5" />
+            </Button>
+          </Link>
           <Link href="/pricing/" className="w-full md:w-auto">
             <Button 
               size="lg" 
@@ -252,7 +275,7 @@ export default function LandingPage() {
           >
             {t('coreFeatures')}
           </motion.h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
             {features.map((feature, index) => (
               <motion.div
                 key={index}
@@ -278,8 +301,8 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* How It Works Section */}
-      <div className="py-8 md:py-16 bg-gradient-to-b from-background via-pink-500/5 to-background">
+      {/* Voice Cloning How It Works Section */}
+      <div className="py-8 md:py-16 bg-gradient-to-b from-background via-green-500/5 to-background">
         <div className="container mx-auto px-4">
           <motion.h2
             className="text-xl md:text-2xl lg:text-3xl font-bold text-center mb-6 md:mb-10"
@@ -288,10 +311,26 @@ export default function LandingPage() {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            {t('howItWorks')}
+            {t('voiceCloningHowItWorks')}
           </motion.h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
-            {steps.map((step, index) => (
+            {[
+              {
+                icon: <Upload className="h-6 w-6" />,
+                title: t('voiceCloneStep1Title'),
+                description: t('voiceCloneStep1Desc')
+              },
+              {
+                icon: <Sparkles className="h-6 w-6" />,
+                title: t('voiceCloneStep2Title'),
+                description: t('voiceCloneStep2Desc')
+              },
+              {
+                icon: <Volume2 className="h-6 w-6" />,
+                title: t('voiceCloneStep3Title'),
+                description: t('voiceCloneStep3Desc')
+              }
+            ].map((step, index) => (
               <motion.div
                 key={index}
                 className="relative"
@@ -303,10 +342,10 @@ export default function LandingPage() {
                 <Card className="p-4 md:p-6 lg:p-8 h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-background/60 backdrop-blur border-primary/10">
                   <div className="flex flex-col items-center text-center">
                     <div className="relative">
-                      <div className="h-12 w-12 md:h-16 md:w-16 rounded-full bg-gradient-to-br from-blue-500/30 via-purple-500/30 to-pink-500/30 flex items-center justify-center mb-4 md:mb-6 transform transition-transform duration-300 hover:scale-110">
+                      <div className="h-12 w-12 md:h-16 md:w-16 rounded-full bg-gradient-to-br from-green-500/30 via-teal-500/30 to-emerald-500/30 flex items-center justify-center mb-4 md:mb-6 transform transition-transform duration-300 hover:scale-110">
                         <div className="h-5 w-5 md:h-6 md:w-6">{step.icon}</div>
                       </div>
-                      <div className="absolute -top-2 -right-2 h-6 w-6 md:h-8 md:w-8 rounded-full bg-gradient-to-br from-primary to-primary/80 text-primary-foreground flex items-center justify-center font-bold text-sm md:text-base">
+                      <div className="absolute -top-2 -right-2 h-6 w-6 md:h-8 md:w-8 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 text-primary-foreground flex items-center justify-center font-bold text-sm md:text-base">
                         {index + 1}
                       </div>
                     </div>
@@ -316,7 +355,57 @@ export default function LandingPage() {
                     </p>
                   </div>
                 </Card>
-                {index < steps.length - 1 && (
+                {index < 2 && (
+                  <div className="hidden md:block absolute top-1/2 -right-4 transform -translate-y-1/2">
+                    <ArrowRight className="h-5 w-5 md:h-6 md:w-6 text-primary/60" />
+                  </div>
+                )}
+              </motion.div>
+            ))}
+          </div>
+          <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
+            {[
+              {
+                icon: <FileText className="h-6 w-6" />,
+                title: t('voiceCloneStep4Title'),
+                description: t('voiceCloneStep4Desc')
+              },
+              {
+                icon: <Sparkles className="h-6 w-6" />,
+                title: t('voiceCloneStep5Title'),
+                description: t('voiceCloneStep5Desc')
+              },
+              {
+                icon: <Volume2 className="h-6 w-6" />,
+                title: t('voiceCloneStep6Title'),
+                description: t('voiceCloneStep6Desc')
+              }
+            ].map((step, index) => (
+              <motion.div
+                key={index}
+                className="relative"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: index * 0.2 }}
+              >
+                <Card className="p-4 md:p-6 lg:p-8 h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-background/60 backdrop-blur border-primary/10">
+                  <div className="flex flex-col items-center text-center">
+                    <div className="relative">
+                      <div className="h-12 w-12 md:h-16 md:w-16 rounded-full bg-gradient-to-br from-green-500/30 via-teal-500/30 to-emerald-500/30 flex items-center justify-center mb-4 md:mb-6 transform transition-transform duration-300 hover:scale-110">
+                        <div className="h-5 w-5 md:h-6 md:w-6">{step.icon}</div>
+                      </div>
+                      <div className="absolute -top-2 -right-2 h-6 w-6 md:h-8 md:w-8 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 text-primary-foreground flex items-center justify-center font-bold text-sm md:text-base">
+                        {index + 4}
+                      </div>
+                    </div>
+                    <h3 className="text-lg md:text-xl lg:text-2xl font-semibold mb-2 md:mb-4">{step.title}</h3>
+                    <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+                      {step.description}
+                    </p>
+                  </div>
+                </Card>
+                {index < 2 && (
                   <div className="hidden md:block absolute top-1/2 -right-4 transform -translate-y-1/2">
                     <ArrowRight className="h-5 w-5 md:h-6 md:w-6 text-primary/60" />
                   </div>

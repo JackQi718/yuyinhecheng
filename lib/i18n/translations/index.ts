@@ -24,6 +24,9 @@ import { ro } from './ro';
 import { sv } from './sv';
 import { tr } from './tr';
 import { cy } from './cy';
+import { cs } from './cs';
+import { vi } from './vi';
+import { uk } from './uk';
 import type { Language, TranslationKey, TranslationType } from './types';
 
 export type { Language, TranslationKey, TranslationType };
@@ -54,9 +57,12 @@ export const translations = {
   ro,
   sv,
   tr,
-  cy
+  cy,
+  cs,
+  vi,
+  uk
 } as const;
 
 // 用于类型检查，确保所有语言都有相同的键
 type TranslationsType = typeof en;
-const checkTranslations: Record<Language, TranslationsType> = translations; 
+const checkTranslations: Record<Language, TranslationsType> = translations;

@@ -1,7 +1,8 @@
 interface CacheOptions {
   text: string;
   language: string;
-  isFemale: boolean;
+  voiceId: string;
+  engine?: string;
   speed: number;
   service: string;
 }
