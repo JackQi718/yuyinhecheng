@@ -12,6 +12,7 @@ export const ko: TranslationType = {
   uploadFile: "파일 업로드",
   downloadAudio: "오디오 다운로드",
   selectLanguage: "언어 선택",
+  searchLanguage: "언어 검색...",
   theme: "테마",
   light: "라이트",
   dark: "다크",
@@ -250,7 +251,7 @@ export const ko: TranslationType = {
   // FAQ
   faq: "자주 묻는 질문",
   faqTrialFeatures: "체험판에 포함된 기능은 무엇인가요?",
-  faqTrialFeaturesAnswer: "체험판은 7일간 10,000자 사용 가능하며 50개 이상 언어 지원, 기본 속도 제어 및 음성 선택이 포함됩니다. 텍스트 입력을 통해 핵심 기능을 경험할 수 있습니다.",
+  faqTrialFeaturesAnswer: "체험판은 7일간 1000자 사용 가능하며 50개 이상 언어 지원, 기본 속도 제어 및 음성 선택이 포함됩니다. 텍스트 입력을 통해 핵심 기능을 경험할 수 있습니다.",
   faqHowToTry: "체험판을 어떻게 시작하나요?",
   faqHowToTryAnswer: "신용카드 없이 계정 등록 후 즉시 시작 가능합니다. 체험 기간 중 언제든지 유료 플랜으로 업그레이드할 수 있습니다.",
   faqQuotaCalc: "문자 할당량은 어떻게 계산되나요?",
@@ -481,5 +482,40 @@ export const ko: TranslationType = {
       testimonial7Content: "원본 음성의 미묘한 감정 표현까지 살리는 놀라운 품질. 음성 복제 기술의 혁신을 경험했습니다.",
       testimonial8Name: "황씨",
       testimonial8Role: "교육 전문가",
-      testimonial8Content: "수업 콘텐츠 사전 제작으로 학습 효율 향상. 학생들의 이해도가 눈에 띄게 개선되었습니다."
+      testimonial8Content: "수업 콘텐츠 사전 제작으로 학습 효율 향상. 학생들의 이해도가 눈에 띄게 개선되었습니다.",
+
+      // 비밀번호 재설정 관련
+    forgotPassword: "비밀번호 찾기",
+    resetPassword: "비밀번호 재설정",
+    newPassword: "새 비밀번호",
+    sendResetLink: "재설정 링크 보내기",
+    passwordResetSuccess: "비밀번호 재설정 성공",
+    passwordResetSuccessDesc: "비밀번호가 성공적으로 재설정되었습니다. 홈페이지로 이동 중...",
+    invalidResetToken: "유효하지 않거나 누락된 재설정 토큰입니다. 새 재설정 링크를 요청해 주세요",
+    createNewPassword: "계정의 새 비밀번호 생성",
+    redirectingToLogin: "홈페이지로 리디렉션 중입니다...",
+    requestNewResetLink: "새로운 재설정 링크를 다시 요청해 주세요",
+    emailRequired: "이메일 주소를 입력해 주세요",
+    passwordTooShort: "비밀번호는 최소 6자 이상이어야 합니다",
+    success: "성공",
+    resetLinkSent: "재설정 링크가 발송되었습니다! 이메일을 확인해 주세요",
+    enterEmailForReset: "비밀번호 재설정 링크를 받으려면 이메일을 입력해 주세요",
+    checkEmailForInstructions: "비밀번호 재설정 안내를 위해 이메일을 확인해 주세요",
+    emailMightTakeTime: "이메일 도착까지 몇 분 정도 소요될 수 있으며, 스팸 폴더도 확인해 주세요",
+    backToLogin: "로그인으로 돌아가기",
+    missingResetToken: "재설정 토큰이 없습니다",
+    somethingWentWrong: "오류가 발생했습니다. 잠시 후 다시 시도해 주세요",
+    verifyEmailPrompt: "이메일 인증을 완료해 주세요. 인증 후 로그인이 가능합니다.",
+
+    // 이메일 인증 페이지
+    emailVerification: "이메일 인증",
+    verifyingYourEmail: "귀하의 이메일 주소를 확인 중입니다",
+    verificationSuccess: "인증 성공",
+    verificationFailed: "인증 실패",
+    verifying: "인증 중...",
+    invalidVerificationLink: "유효하지 않은 인증 링크",
+    verificationSuccessful: "이메일 인증이 성공적으로 완료되었습니다!",
+    goToHomepage: "홈페이지로 이동",
+    resendVerificationEmail: "인증 메일 재전송",
+    verificationError: "인증 과정에서 오류가 발생했습니다"
     } as const;

@@ -12,6 +12,7 @@ export const fr: TranslationType = {
   uploadFile: "Téléverser Fichier",
   downloadAudio: "Télécharger Audio",
   selectLanguage: "Sélectionner Langue",
+  searchLanguage: "Rechercher une langue...",
   theme: "Thème",
   light: "Clair",
   dark: "Sombre",
@@ -250,7 +251,7 @@ export const fr: TranslationType = {
   // FAQ
   faq: "FAQ",
   faqTrialFeatures: "Inclus dans l'essai ?",
-  faqTrialFeaturesAnswer: "7 jours avec 10 000 caractères, 50+ langues et contrôles basiques",
+  faqTrialFeaturesAnswer: "7 jours avec 1000 caractères, 50+ langues et contrôles basiques",
   faqHowToTry: "Commencer l'essai ?",
   faqHowToTryAnswer: "Inscrivez-vous sans carte. Passez à un plan payant quand vous voulez",
   faqQuotaCalc: "Calcul du quota ?",
@@ -481,5 +482,40 @@ export const fr: TranslationType = {
       testimonial7Content: "Exigeant sur la qualité sonore, je suis impressionné par la préservation des émotions et caractéristiques vocales originales.",
       testimonial8Name: "Mme Huang",
       testimonial8Role: "Éducatrice",
-      testimonial8Content: "Cloner ma voix me permet d'enregistrer des cours à l'avance, améliorant radicalement l'efficacité pédagogique."
+      testimonial8Content: "Cloner ma voix me permet d'enregistrer des cours à l'avance, améliorant radicalement l'efficacité pédagogique.",
+  
+  // Réinitialisation du mot de passe
+  forgotPassword: "Mot de passe oublié",
+  resetPassword: "Réinitialiser le mot de passe",
+  newPassword: "Nouveau mot de passe",
+  sendResetLink: "Envoyer le lien de réinitialisation",
+  passwordResetSuccess: "Réinitialisation réussie",
+  passwordResetSuccessDesc: "Votre mot de passe a été réinitialisé avec succès, redirection vers la page d'accueil...",
+  invalidResetToken: "Jeton de réinitialisation invalide ou manquant, veuillez demander un nouveau lien",
+  createNewPassword: "Créez un nouveau mot de passe pour votre compte",
+  redirectingToLogin: "Redirection vers la page d'accueil...",
+  requestNewResetLink: "Veuillez demander un nouveau lien de réinitialisation",
+  emailRequired: "Veuillez saisir votre adresse e-mail",
+  passwordTooShort: "Le mot de passe doit contenir au moins 6 caractères",
+  success: "Succès",
+  resetLinkSent: "Lien de réinitialisation envoyé ! Vérifiez vos e-mails",
+  enterEmailForReset: "Saisissez votre e-mail pour recevoir le lien de réinitialisation",
+  checkEmailForInstructions: "Consultez vos e-mails pour les instructions de réinitialisation",
+  emailMightTakeTime: "L'e-mail peut prendre quelques minutes, vérifiez le dossier spam",
+  backToLogin: "Retour à la connexion",
+  missingResetToken: "Clé de réinitialisation manquante",
+  somethingWentWrong: "Une erreur est survenue, veuillez réessayer plus tard",
+  verifyEmailPrompt: "Veuillez vérifier votre compte par e-mail. Vous pourrez vous connecter après vérification.",
+
+  // Page de vérification d'e-mail
+  emailVerification: "Vérification d'e-mail",
+  verifyingYourEmail: "Vérification de votre adresse e-mail",
+  verificationSuccess: "Vérification réussie",
+  verificationFailed: "Échec de la vérification",
+  verifying: "Vérification en cours...",
+  invalidVerificationLink: "Lien de vérification invalide",
+  verificationSuccessful: "E-mail vérifié avec succès !",
+  goToHomepage: "Accéder à la page d'accueil",
+  resendVerificationEmail: "Renvoyer l'e-mail de vérification",
+  verificationError: "Erreur lors de la vérification"
     } as const;

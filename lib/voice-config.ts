@@ -4,14 +4,14 @@ export interface VoiceOption {
   id: VoiceId | string;
   gender: 'Female' | 'Male';
   engine?: 'standard' | 'neural';
-  provider?: 'aws' | 'minimax' | 'openai';
+  provider?: 'aws' | 'aws-ntts' | 'minimax' | 'openai';
   name: string;
 }
 
 export interface LanguageVoices {
   languageCode: string;
   languageName: string;
-  provider: 'aws' | 'minimax' | 'openai';
+  provider: 'aws' | 'aws-ntts' | 'minimax' | 'openai';
   voices: VoiceOption[];
   defaultVoice: VoiceId | string;
 }
@@ -347,7 +347,6 @@ export const MINIMAX_VOICES: LanguageVoices[] = [
   }
 ];
 
-// OpenAI TTS 语音配置
 export const OPENAI_VOICES: LanguageVoices[] = [
   {
     languageCode: "en-US",
@@ -428,24 +427,394 @@ export const OPENAI_VOICES: LanguageVoices[] = [
 
 export const AVAILABLE_VOICES = [...AWS_VOICES, ...MINIMAX_VOICES, ...OPENAI_VOICES];
 
+// AWS Polly 神经引擎支持的语言和声音（根据官方文档更新）
+export const AWS_NTTS_VOICES: LanguageVoices[] = [
+  {
+    languageCode: "ar-AE",
+    languageName: "阿拉伯语（海湾）",
+    provider: "aws-ntts",
+    voices: [
+      { id: "Hala", name: "Hala", gender: "Female", engine: "neural", provider: "aws-ntts" },
+      { id: "Zayd", name: "Zayd", gender: "Male", engine: "neural", provider: "aws-ntts" }
+    ],
+    defaultVoice: "Hala"
+  },
+  {
+    languageCode: "nl-BE",
+    languageName: "荷兰语（比利时）",
+    provider: "aws-ntts",
+    voices: [
+      { id: "Lisa", name: "Lisa", gender: "Female", engine: "neural", provider: "aws-ntts" }
+    ],
+    defaultVoice: "Lisa"
+  },
+  {
+    languageCode: "ca-ES",
+    languageName: "加泰罗尼亚语",
+    provider: "aws-ntts",
+    voices: [
+      { id: "Arlet", name: "Arlet", gender: "Female", engine: "neural", provider: "aws-ntts" }
+    ],
+    defaultVoice: "Arlet"
+  },
+  {
+    languageCode: "cs-CZ",
+    languageName: "捷克语",
+    provider: "aws-ntts",
+    voices: [
+      { id: "Jitka", name: "Jitka", gender: "Female", engine: "neural", provider: "aws-ntts" }
+    ],
+    defaultVoice: "Jitka"
+  },
+  {
+    languageCode: "yue-CN",
+    languageName: "中文（粤语）",
+    provider: "aws-ntts",
+    voices: [
+      { id: "Hiujin", name: "Hiujin", gender: "Female", engine: "neural", provider: "aws-ntts" }
+    ],
+    defaultVoice: "Hiujin"
+  },
+  {
+    languageCode: "cmn-CN",
+    languageName: "中文（普通话）",
+    provider: "aws-ntts",
+    voices: [
+      { id: "Zhiyu", name: "Zhiyu", gender: "Female", engine: "neural", provider: "aws-ntts" }
+    ],
+    defaultVoice: "Zhiyu"
+  },
+  {
+    languageCode: "da-DK",
+    languageName: "丹麦语",
+    provider: "aws-ntts",
+    voices: [
+      { id: "Sofie", name: "Sofie", gender: "Female", engine: "neural", provider: "aws-ntts" }
+    ],
+    defaultVoice: "Sofie"
+  },
+  {
+    languageCode: "nl-NL",
+    languageName: "荷兰语",
+    provider: "aws-ntts",
+    voices: [
+      { id: "Laura", name: "Laura", gender: "Female", engine: "neural", provider: "aws-ntts" }
+    ],
+    defaultVoice: "Laura"
+  },
+  {
+    languageCode: "en-AU",
+    languageName: "英语（澳大利亚）",
+    provider: "aws-ntts",
+    voices: [
+      { id: "Olivia", name: "Olivia", gender: "Female", engine: "neural", provider: "aws-ntts" }
+    ],
+    defaultVoice: "Olivia"
+  },
+  {
+    languageCode: "en-GB",
+    languageName: "英语（英国）",
+    provider: "aws-ntts",
+    voices: [
+      { id: "Amy", name: "Amy", gender: "Female", engine: "neural", provider: "aws-ntts" },
+      { id: "Emma", name: "Emma", gender: "Female", engine: "neural", provider: "aws-ntts" },
+      { id: "Brian", name: "Brian", gender: "Male", engine: "neural", provider: "aws-ntts" },
+      { id: "Arthur", name: "Arthur", gender: "Male", engine: "neural", provider: "aws-ntts" }
+    ],
+    defaultVoice: "Amy"
+  },
+  {
+    languageCode: "en-IN",
+    languageName: "英语（印度）",
+    provider: "aws-ntts",
+    voices: [
+      { id: "Kajal", name: "Kajal", gender: "Female", engine: "neural", provider: "aws-ntts" }
+    ],
+    defaultVoice: "Kajal"
+  },
+  {
+    languageCode: "en-IE",
+    languageName: "英语（爱尔兰）",
+    provider: "aws-ntts",
+    voices: [
+      { id: "Niamh", name: "Niamh", gender: "Female", engine: "neural", provider: "aws-ntts" }
+    ],
+    defaultVoice: "Niamh"
+  },
+  {
+    languageCode: "en-NZ",
+    languageName: "英语（新西兰）",
+    provider: "aws-ntts",
+    voices: [
+      { id: "Aria", name: "Aria", gender: "Female", engine: "neural", provider: "aws-ntts" }
+    ],
+    defaultVoice: "Aria"
+  },
+  {
+    languageCode: "en-SG",
+    languageName: "英语（新加坡）",
+    provider: "aws-ntts",
+    voices: [
+      { id: "Jasmine", name: "Jasmine", gender: "Female", engine: "neural", provider: "aws-ntts" }
+    ],
+    defaultVoice: "Jasmine"
+  },
+  {
+    languageCode: "en-ZA",
+    languageName: "英语（南非）",
+    provider: "aws-ntts",
+    voices: [
+      { id: "Ayanda", name: "Ayanda", gender: "Female", engine: "neural", provider: "aws-ntts" }
+    ],
+    defaultVoice: "Ayanda"
+  },
+  {
+    languageCode: "en-US",
+    languageName: "英语（美国）",
+    provider: "aws-ntts",
+    voices: [
+      { id: "Danielle", name: "Danielle", gender: "Female", engine: "neural", provider: "aws-ntts" },
+      { id: "Gregory", name: "Gregory", gender: "Male", engine: "neural", provider: "aws-ntts" },
+      { id: "Ivy", name: "Ivy", gender: "Female", engine: "neural", provider: "aws-ntts" },
+      { id: "Joanna", name: "Joanna", gender: "Female", engine: "neural", provider: "aws-ntts" },
+      { id: "Kendra", name: "Kendra", gender: "Female", engine: "neural", provider: "aws-ntts" },
+      { id: "Kimberly", name: "Kimberly", gender: "Female", engine: "neural", provider: "aws-ntts" },
+      { id: "Salli", name: "Salli", gender: "Female", engine: "neural", provider: "aws-ntts" },
+      { id: "Joey", name: "Joey", gender: "Male", engine: "neural", provider: "aws-ntts" },
+      { id: "Justin", name: "Justin", gender: "Male", engine: "neural", provider: "aws-ntts" },
+      { id: "Kevin", name: "Kevin", gender: "Male", engine: "neural", provider: "aws-ntts" },
+      { id: "Matthew", name: "Matthew", gender: "Male", engine: "neural", provider: "aws-ntts" },
+      { id: "Ruth", name: "Ruth", gender: "Female", engine: "neural", provider: "aws-ntts" },
+      { id: "Stephen", name: "Stephen", gender: "Male", engine: "neural", provider: "aws-ntts" }
+    ],
+    defaultVoice: "Joanna"
+  },
+  {
+    languageCode: "fi-FI",
+    languageName: "芬兰语",
+    provider: "aws-ntts",
+    voices: [
+      { id: "Suvi", name: "Suvi", gender: "Female", engine: "neural", provider: "aws-ntts" }
+    ],
+    defaultVoice: "Suvi"
+  },
+  {
+    languageCode: "fr-BE",
+    languageName: "法语（比利时）",
+    provider: "aws-ntts",
+    voices: [
+      { id: "Isabelle", name: "Isabelle", gender: "Female", engine: "neural", provider: "aws-ntts" }
+    ],
+    defaultVoice: "Isabelle"
+  },
+  {
+    languageCode: "fr-CA",
+    languageName: "法语（加拿大）",
+    provider: "aws-ntts",
+    voices: [
+      { id: "Gabrielle", name: "Gabrielle", gender: "Female", engine: "neural", provider: "aws-ntts" },
+      { id: "Liam", name: "Liam", gender: "Male", engine: "neural", provider: "aws-ntts" }
+    ],
+    defaultVoice: "Gabrielle"
+  },
+  {
+    languageCode: "fr-FR",
+    languageName: "法语（法国）",
+    provider: "aws-ntts",
+    voices: [
+      { id: "Léa", name: "Léa", gender: "Female", engine: "neural", provider: "aws-ntts" },
+      { id: "Rémi", name: "Rémi", gender: "Male", engine: "neural", provider: "aws-ntts" }
+    ],
+    defaultVoice: "Léa"
+  },
+  {
+    languageCode: "de-DE",
+    languageName: "德语",
+    provider: "aws-ntts",
+    voices: [
+      { id: "Vicki", name: "Vicki", gender: "Female", engine: "neural", provider: "aws-ntts" },
+      { id: "Daniel", name: "Daniel", gender: "Male", engine: "neural", provider: "aws-ntts" }
+    ],
+    defaultVoice: "Vicki"
+  },
+  {
+    languageCode: "de-AT",
+    languageName: "德语（奥地利）",
+    provider: "aws-ntts",
+    voices: [
+      { id: "Hannah", name: "Hannah", gender: "Female", engine: "neural", provider: "aws-ntts" }
+    ],
+    defaultVoice: "Hannah"
+  },
+  {
+    languageCode: "de-CH",
+    languageName: "德语（瑞士）",
+    provider: "aws-ntts",
+    voices: [
+      { id: "Sabrina", name: "Sabrina", gender: "Female", engine: "neural", provider: "aws-ntts" }
+    ],
+    defaultVoice: "Sabrina"
+  },
+  {
+    languageCode: "hi-IN",
+    languageName: "印地语",
+    provider: "aws-ntts",
+    voices: [
+      { id: "Kajal", name: "Kajal", gender: "Female", engine: "neural", provider: "aws-ntts" }
+    ],
+    defaultVoice: "Kajal"
+  },
+  {
+    languageCode: "it-IT",
+    languageName: "意大利语",
+    provider: "aws-ntts",
+    voices: [
+      { id: "Bianca", name: "Bianca", gender: "Female", engine: "neural", provider: "aws-ntts" },
+      { id: "Adriano", name: "Adriano", gender: "Male", engine: "neural", provider: "aws-ntts" }
+    ],
+    defaultVoice: "Bianca"
+  },
+  {
+    languageCode: "ja-JP",
+    languageName: "日语",
+    provider: "aws-ntts",
+    voices: [
+      { id: "Takumi", name: "たくみ", gender: "Male", engine: "neural", provider: "aws-ntts" },
+      { id: "Kazuha", name: "かずは", gender: "Female", engine: "neural", provider: "aws-ntts" },
+      { id: "Tomoko", name: "ともこ", gender: "Female", engine: "neural", provider: "aws-ntts" }
+    ],
+    defaultVoice: "Takumi"
+  },
+  {
+    languageCode: "ko-KR",
+    languageName: "韩语",
+    provider: "aws-ntts",
+    voices: [
+      { id: "Seoyeon", name: "서연", gender: "Female", engine: "neural", provider: "aws-ntts" },
+      { id: "Jihye", name: "지혜", gender: "Female", engine: "neural", provider: "aws-ntts" }
+    ],
+    defaultVoice: "Seoyeon"
+  },
+  {
+    languageCode: "nb-NO",
+    languageName: "挪威语",
+    provider: "aws-ntts",
+    voices: [
+      { id: "Ida", name: "Ida", gender: "Female", engine: "neural", provider: "aws-ntts" }
+    ],
+    defaultVoice: "Ida"
+  },
+  {
+    languageCode: "pl-PL",
+    languageName: "波兰语",
+    provider: "aws-ntts",
+    voices: [
+      { id: "Ola", name: "Ola", gender: "Female", engine: "neural", provider: "aws-ntts" }
+    ],
+    defaultVoice: "Ola"
+  },
+  {
+    languageCode: "pt-BR",
+    languageName: "葡萄牙语（巴西）",
+    provider: "aws-ntts",
+    voices: [
+      { id: "Camila", name: "Camila", gender: "Female", engine: "neural", provider: "aws-ntts" },
+      { id: "Vitória", name: "Vitória", gender: "Female", engine: "neural", provider: "aws-ntts" },
+      { id: "Thiago", name: "Thiago", gender: "Male", engine: "neural", provider: "aws-ntts" }
+    ],
+    defaultVoice: "Camila"
+  },
+  {
+    languageCode: "pt-PT",
+    languageName: "葡萄牙语（葡萄牙）",
+    provider: "aws-ntts",
+    voices: [
+      { id: "Inês", name: "Inês", gender: "Female", engine: "neural", provider: "aws-ntts" }
+    ],
+    defaultVoice: "Inês"
+  },
+  {
+    languageCode: "es-ES",
+    languageName: "西班牙语（西班牙）",
+    provider: "aws-ntts",
+    voices: [
+      { id: "Lucia", name: "Lucia", gender: "Female", engine: "neural", provider: "aws-ntts" },
+      { id: "Sergio", name: "Sergio", gender: "Male", engine: "neural", provider: "aws-ntts" }
+    ],
+    defaultVoice: "Lucia"
+  },
+  {
+    languageCode: "es-MX",
+    languageName: "西班牙语（墨西哥）",
+    provider: "aws-ntts",
+    voices: [
+      { id: "Mia", name: "Mia", gender: "Female", engine: "neural", provider: "aws-ntts" },
+      { id: "Andrés", name: "Andrés", gender: "Male", engine: "neural", provider: "aws-ntts" }
+    ],
+    defaultVoice: "Mia"
+  },
+  {
+    languageCode: "es-US",
+    languageName: "西班牙语（美国）",
+    provider: "aws-ntts",
+    voices: [
+      { id: "Lupe", name: "Lupe", gender: "Female", engine: "neural", provider: "aws-ntts" },
+      { id: "Pedro", name: "Pedro", gender: "Male", engine: "neural", provider: "aws-ntts" }
+    ],
+    defaultVoice: "Lupe"
+  },
+  {
+    languageCode: "sv-SE",
+    languageName: "瑞典语",
+    provider: "aws-ntts",
+    voices: [
+      { id: "Elin", name: "Elin", gender: "Female", engine: "neural", provider: "aws-ntts" }
+    ],
+    defaultVoice: "Elin"
+  },
+  {
+    languageCode: "tr-TR",
+    languageName: "土耳其语",
+    provider: "aws-ntts",
+    voices: [
+      { id: "Burcu", name: "Burcu", gender: "Female", engine: "neural", provider: "aws-ntts" }
+    ],
+    defaultVoice: "Burcu"
+  }
+];
+
+// 更新AVAILABLE_VOICES以包含神经引擎的声音
+export const AVAILABLE_VOICES_WITH_NTTS = [...AWS_VOICES, ...MINIMAX_VOICES, ...OPENAI_VOICES, ...AWS_NTTS_VOICES];
+
 // 根据语言代码和服务商获取可用的声音选项
-export function getVoicesByLanguage(languageCode: string, provider: 'aws' | 'minimax' | 'openai' = 'aws'): VoiceOption[] {
-  const voices = provider === 'aws' 
-    ? AWS_VOICES 
-    : provider === 'minimax' 
-      ? MINIMAX_VOICES 
-      : provider === 'openai'
-        ? OPENAI_VOICES
-        : [];
+export function getVoicesByLanguage(languageCode: string, provider: 'aws' | 'aws-ntts' | 'minimax' | 'openai' = 'aws'): VoiceOption[] {
+  let voices: LanguageVoices[] = [];
+  
+  if (provider === 'aws-ntts') {
+    voices = AWS_NTTS_VOICES;
+  } else if (provider === 'aws') {
+    voices = AWS_VOICES;
+  } else if (provider === 'minimax') {
+    voices = MINIMAX_VOICES;
+  } else if (provider === 'openai') {
+    voices = OPENAI_VOICES;
+  }
+  
   const languageVoices = voices.find(v => v.languageCode === languageCode);
   return languageVoices?.voices || [];
 }
 
 // 根据服务提供商获取支持的语言列表
-export function getSupportedLanguages(provider: 'aws' | 'minimax' | 'openai'): { code: string; name: string; provider: string }[] {
+export function getSupportedLanguages(provider: 'aws' | 'aws-ntts' | 'minimax' | 'openai'): { code: string; name: string; provider: string }[] {
   switch (provider) {
     case 'aws':
       return AWS_VOICES.map(voice => ({
+        code: voice.languageCode,
+        name: voice.languageName,
+        provider: voice.provider
+      }));
+    case 'aws-ntts':
+      return AWS_NTTS_VOICES.map(voice => ({
         code: voice.languageCode,
         name: voice.languageName,
         provider: voice.provider

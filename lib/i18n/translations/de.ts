@@ -12,6 +12,7 @@ export const de: TranslationType = {
   uploadFile: "Datei hochladen",
   downloadAudio: "Audio herunterladen",
   selectLanguage: "Sprache auswählen",
+  searchLanguage: "Sprache suchen...",
   theme: "Design",
   light: "Hell",
   dark: "Dunkel",
@@ -251,7 +252,7 @@ export const de: TranslationType = {
   // FAQ
   faq: "Häufige Fragen",
   faqTrialFeatures: "Was beinhaltet die Testversion?",
-  faqTrialFeaturesAnswer: "7 Tage Testphase mit 10.000 Zeichen, 50+ Sprachen, Basisfunktionen zur Geschwindigkeits- und Stimmenanpassung.",
+  faqTrialFeaturesAnswer: "7 Tage Testphase mit 1000 Zeichen, 50+ Sprachen, Basisfunktionen zur Geschwindigkeits- und Stimmenanpassung.",
   faqHowToTry: "Wie starte ich die Testphase?",
   faqHowToTryAnswer: "Einfach Account erstellen - keine Kreditkarte erforderlich. Jederzeit upgrade auf Bezahltarif möglich.",
   faqQuotaCalc: "Wie wird das Zeichenkontingent berechnet?",
@@ -482,5 +483,40 @@ export const de: TranslationType = {
       testimonial7Content: "Als Profi habe ich hohe Ansprüche an Tonqualität. Die Klonqualität dieser Plattform ist herausragend und bewahrt die emotionale Nuance der Originalstimme.",
       testimonial8Name: "Frau Huang",
       testimonial8Role: "Bildungsexperte",
-      testimonial8Content: "Durch die Stimmklonierung kann ich Lehrinhalte vorab aufnehmen und Schülern jederzeit zugänglich machen - ein Quantensprung für den Unterrichtserfolg."
+      testimonial8Content: "Durch die Stimmklonierung kann ich Lehrinhalte vorab aufnehmen und Schülern jederzeit zugänglich machen - ein Quantensprung für den Unterrichtserfolg.",
+  
+  // Passwortzurücksetzung
+  forgotPassword: "Passwort vergessen",
+  resetPassword: "Passwort zurücksetzen",
+  newPassword: "Neues Passwort",
+  sendResetLink: "Zurücksetzungslink senden",
+  passwordResetSuccess: "Passwort erfolgreich zurückgesetzt",
+  passwordResetSuccessDesc: "Ihr Passwort wurde erfolgreich aktualisiert, Sie werden zur Startseite weitergeleitet...",
+  invalidResetToken: "Ungültiges oder fehlendes Zurücksetzungstoken, bitte neuen Link anfordern",
+  createNewPassword: "Neues Passwort für Ihr Konto erstellen",
+  redirectingToLogin: "Weiterleitung zur Startseite...",
+  requestNewResetLink: "Bitte neuen Zurücksetzungslink anfordern",
+  emailRequired: "Bitte geben Sie Ihre E-Mail-Adresse ein",
+  passwordTooShort: "Passwort muss mindestens 6 Zeichen lang sein",
+  success: "Erfolgreich",
+  resetLinkSent: "Zurücksetzungslink gesendet! Bitte E-Mail prüfen",
+  enterEmailForReset: "Geben Sie Ihre E-Mail für den Zurücksetzungslink ein",
+  checkEmailForInstructions: "Prüfen Sie Ihre E-Mail für Anweisungen",
+  emailMightTakeTime: "Die E-Mail könnte einige Minuten benötigen, vergessen Sie nicht den Spam-Ordner zu prüfen",
+  backToLogin: "Zurück zur Anmeldung",
+  missingResetToken: "Fehlendes Zurücksetzungstoken",
+  somethingWentWrong: "Ein Fehler ist aufgetreten, bitte später erneut versuchen",
+  verifyEmailPrompt: "Bitte bestätigen Sie Ihr Konto per E-Mail. Nach Bestätigung können Sie sich anmelden.",
+
+  // E-Mail-Bestätigungsseite
+  emailVerification: "E-Mail-Bestätigung",
+  verifyingYourEmail: "Ihre E-Mail-Adresse wird überprüft",
+  verificationSuccess: "Bestätigung erfolgreich",
+  verificationFailed: "Bestätigung fehlgeschlagen",
+  verifying: "Wird überprüft...",
+  invalidVerificationLink: "Ungültiger Bestätigungslink",
+  verificationSuccessful: "E-Mail wurde erfolgreich bestätigt!",
+  goToHomepage: "Zur Startseite",
+  resendVerificationEmail: "Bestätigungsmail erneut senden",
+  verificationError: "Fehler während der Bestätigung"
     } as const;

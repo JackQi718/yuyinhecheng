@@ -12,6 +12,7 @@ export const fi: TranslationType = {
   uploadFile: "Lataa Tiedosto",
   downloadAudio: "Lataa Ääni",
   selectLanguage: "Valitse Kieli",
+  searchLanguage: "Etsi kieltä...",
   theme: "Teema",
   light: "Vaalea",
   dark: "Tumma",
@@ -252,7 +253,7 @@ export const fi: TranslationType = {
   // FAQ
   faq: "Usein Kysytyt Kysymykset",
   faqTrialFeatures: "Mitä kokeilu sisältää?",
-  faqTrialFeaturesAnswer: "7 päivää, 10 000 merkkiä, yli 50 kieltä ja perussäätöjä",
+  faqTrialFeaturesAnswer: "7 päivää, 1000 merkkiä, yli 50 kieltä ja perussäätöjä",
   faqHowToTry: "Kuinka aloitan kokeilun?",
   faqHowToTryAnswer: "Rekisteröidy ilman luottokorttia. Päivitä milloin vain maksulliseen suunnitelmaan",
   faqQuotaCalc: "Kuinka merkkikiintiö lasketaan?",
@@ -483,5 +484,40 @@ export const fi: TranslationType = {
       testimonial7Content: "Ääninäyttelijänä vaadin korkeaa äänenlaatua. Tämän alustan äänen kloonauslaatu on todella vaikuttava ja säilyttää alkuperäisen äänen tunteet ja piirteet.",
       testimonial8Name: "Rouva Huang",
       testimonial8Role: "Kouluttaja",
-      testimonial8Content: "Ääneni kloonaamisen jälkeen voin ennakkoon tallentaa oppituntimateriaalin, jolloin oppilaat voivat kuulla selitykseni milloin tahansa, parantaen opetuksen tehokkuutta merkittävästi."
+      testimonial8Content: "Ääneni kloonaamisen jälkeen voin ennakkoon tallentaa oppituntimateriaalin, jolloin oppilaat voivat kuulla selitykseni milloin tahansa, parantaen opetuksen tehokkuutta merkittävästi.",
+  
+  // Salasanan nollaus
+  forgotPassword: "Unohdin salasanani",
+  resetPassword: "Nollaa salasana",
+  newPassword: "Uusi salasana",
+  sendResetLink: "Lähetä nollauslinkki",
+  passwordResetSuccess: "Salasanan nollaus onnistui",
+  passwordResetSuccessDesc: "Salasanasi on nollattu onnistuneesti, ohjataan etusivulle...",
+  invalidResetToken: "Virheellinen tai puuttuva nollaustunniste, pyydä uusi linkki",
+  createNewPassword: "Luo uusi salasana tilillesi",
+  redirectingToLogin: "Ohjataan etusivulle...",
+  requestNewResetLink: "Pyydä uusi nollauslinkki",
+  emailRequired: "Syötä sähköpostiosoitteesi",
+  passwordTooShort: "Salasanan tulee olla vähintään 6 merkkiä",
+  success: "Onnistui",
+  resetLinkSent: "Nollauslinkki lähetetty! Tarkista sähköpostisi",
+  enterEmailForReset: "Syötä sähköpostisi saadaksesi nollauslinkin",
+  checkEmailForInstructions: "Tarkista sähköpostisi ohjeita varten",
+  emailMightTakeTime: "Sähköpostin saapuminen voi kestää muutaman minuutin, tarkista roskapostikansio",
+  backToLogin: "Takaisin kirjautumiseen",
+  missingResetToken: "Nollaustunniste puuttuu",
+  somethingWentWrong: "Jotain meni pieleen, yritä myöhemmin uudelleen",
+  verifyEmailPrompt: "Vahvista tilisi sähköpostitse. Voit kirjautua sisään vahvistuksen jälkeen.",
+
+  // Sähköpostin vahvistussivu
+  emailVerification: "Sähköpostin vahvistus",
+  verifyingYourEmail: "Vahvistetaan sähköpostiosoittettasi",
+  verificationSuccess: "Vahvistus onnistui",
+  verificationFailed: "Vahvistus epäonnistui",
+  verifying: "Vahvistetaan...",
+  invalidVerificationLink: "Virheellinen vahvistuslinkki",
+  verificationSuccessful: "Sähköposti vahvistettu onnistuneesti!",
+  goToHomepage: "Siirry etusivulle",
+  resendVerificationEmail: "Lähetä vahvistussähköposti uudelleen",
+  verificationError: "Virhe vahvistusprosessissa"
     } as const;

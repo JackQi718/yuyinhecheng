@@ -12,6 +12,7 @@ export const cy: TranslationType = {
   uploadFile: "Uwchlwytho Ffeil",
   downloadAudio: "Lawrlwytho Sain",
   selectLanguage: "Dewiswch Iaith",
+  searchLanguage: "Chwilio iaith...",
   theme: "Thema",
   light: "Golau",
   dark: "Tywyll",
@@ -152,6 +153,7 @@ export const cy: TranslationType = {
   icelandic: "Islandeg",
   scottishEnglish: "Saesneg Albanaidd",
   singaporeanEnglish: "Saesneg Singapore",
+  mandarin: "Chinese Mandarin",
   
   afrikaans: "Affricaneg",
   bulgarian: "Bwlgareg",
@@ -251,7 +253,7 @@ export const cy: TranslationType = {
   // FAQ
   faq: "Cwestiynau Cyffredin",
   faqTrialFeatures: "Pa nodweddion sy'n gynwysedig yn y treial?",
-  faqTrialFeaturesAnswer: "Mae'r treial yn cynnwys cyfnod o 7 diwrnod gyda 10,000 o gymeriadau, cefnogaeth ar gyfer 50+ o ieithoedd, rheoli cyflymder sylfaenol, a dewis llais. Gallwch brofi nodweddion craidd trwy fewnbwn testun i weld a yw'n cwrdd â'ch anghenion.",
+  faqTrialFeaturesAnswer: "Mae'r treial yn cynnwys cyfnod o 7 diwrnod gyda 1000 o gymeriadau, cefnogaeth ar gyfer 50+ o ieithoedd, rheoli cyflymder sylfaenol, a dewis llais. Gallwch brofi nodweddion craidd trwy fewnbwn testun i weld a yw'n cwrdd â'ch anghenion.",
   faqHowToTry: "Sut alla i ddechrau'r treial?",
   faqHowToTryAnswer: "Cofrestrwch gyfrif i gael mynediad treial, dim cerdyn credyd angen. Gallwch uwchraddio i gynllun tâl unrhyw bryd yn ystod y treial i gael mynediad at fwy o nodweddion a chwotâu cymeriadau uwch.",
   faqQuotaCalc: "Sut mae cwota cymeriadau'n cael ei gyfrif?",
@@ -482,5 +484,40 @@ export const cy: TranslationType = {
       testimonial7Content: "Fel actor lleisiol, mae gennyf safonau uchel o ran ansawdd llais. Mae ansawdd clonio llais y platfform hwn yn argraffus, yn gallu cadw emosiwn a nodweddion y llais gwreiddiol.",
       testimonial8Name: "Madam Huang",
       testimonial8Role: "Gweithiwr Addysg",
-      testimonial8Content: "Ar ôl clonio fy llais ar y platfform hwn, gallaf ragrecordio cynnwys gwersi a gwneud i fyfyrwyr glywed fy esboniad unrhyw bryd, gan wella effeithiolrwydd addysgu'n sylweddol."
-  } as const;
+      testimonial8Content: "Ar ôl clonio fy llais ar y platfform hwn, gallaf ragrecordio cynnwys gwersi a gwneud i fyfyrwyr glywed fy esboniad unrhyw bryd, gan wella effeithiolrwydd addysgu'n sylweddol.",
+  
+  // Ail-osod cyfrinair
+  forgotPassword: "Wedi anghofio cyfrinair",
+  resetPassword: "Ail-osod cyfrinair",
+  newPassword: "Cyfrinair newydd",
+  sendResetLink: "Anfon dolen ail-osod",
+  passwordResetSuccess: "Ail-osod cyfrinair yn llwyddiannus",
+  passwordResetSuccessDesc: "Mae eich cyfrinair wedi’i ail-osod yn llwyddiannus, yn cael ei ailgyfeirio i’r hafan...",
+  invalidResetToken: "Tocyn ail-osod annilys neu ar goll, ail-wneud cais am ddolen ail-osod",
+  createNewPassword: "Creu cyfrinair newydd ar gyfer eich cyfrif",
+  redirectingToLogin: "Yn ailgyfeirio i’r hafan...",
+  requestNewResetLink: "Ail-wneud cais am ddolen ail-osod",
+  emailRequired: "Rhowch eich cyfeiriad e-bost",
+  passwordTooShort: "Mae angen o leiaf 6 nod ar gyfer y cyfrinair",
+  success: "Llwyddiant",
+  resetLinkSent: "Dolen ail-osod wedi’i hanfon! Gwiriwch eich e-bost",
+  enterEmailForReset: "Rhowch eich e-bost i dderbyn dolen ail-osod",
+  checkEmailForInstructions: "Gwiriwch eich e-bost am gyfarwyddiadau ail-osod",
+  emailMightTakeTime: "Efallai bydd yn cymryd ychydig funudau i’r e-bost gyrraedd, peidiwch â gwirio’r ffolder sbam",
+  backToLogin: "Yn ôl i mewngofnodi",
+  missingResetToken: "Tocyn ail-osod ar goll",
+  somethingWentWrong: "Aeth rhywbeth o'i le, rhowch gynnig arall arni yn hwyrach",
+  verifyEmailPrompt: "Gwiriwch eich e-bost i ddilysu'ch cyfrif. Gallwch fewngofnodi ar ôl dilysu.",
+
+  // Tudalen Dilysu E-bost
+  emailVerification: "Dilysu E-bost",
+  verifyingYourEmail: "Wrthi'n dilysu'ch cyfeiriad e-bost",
+  verificationSuccess: "Dilysu yn Llwyddiannus",
+  verificationFailed: "Methodd y Dilysu",
+  verifying: "Wrthi'n dilysu...",
+  invalidVerificationLink: "Dolen ddilysu annilys",
+  verificationSuccessful: "Dilyswyd e-bost yn llwyddiannus!",
+  goToHomepage: "Ewch i'r Hafan",
+  resendVerificationEmail: "Ail-anfon e-bost dilysu",
+  verificationError: "Gwall wrth ddilysu"
+    } as const;

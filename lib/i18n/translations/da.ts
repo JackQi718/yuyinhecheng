@@ -12,6 +12,7 @@ export const da: TranslationType = {
   uploadFile: "Upload Fil",
   downloadAudio: "Download Lyd",
   selectLanguage: "Vælg Sprog",
+  searchLanguage: "Søg sprog...",
   theme: "Tema",
   light: "Lyst",
   dark: "Mørkt",
@@ -250,7 +251,7 @@ export const da: TranslationType = {
   // FAQ
   faq: "Ofte Stillede Spørgsmål",
   faqTrialFeatures: "Hvilke funktioner er inkluderet i prøveversionen?",
-  faqTrialFeaturesAnswer: "Prøveversionen inkluderer 7 dage med 10.000 tegn, understøttelse af 50+ sprog, grundlæggende hastighedskontrol og stemmevalg. Du kan opleve kernefunktioner via tekstinput.",
+  faqTrialFeaturesAnswer: "Prøveversionen inkluderer 7 dage med 1000 tegn, understøttelse af 50+ sprog, grundlæggende hastighedskontrol og stemmevalg. Du kan opleve kernefunktioner via tekstinput.",
   faqHowToTry: "Hvordan starter jeg prøveperioden?",
   faqHowToTryAnswer: "Blot opret en konto for at få adgang til prøveversionen, ingen kreditkort nødvendigt. Du kan opgradere til betalingsplan når som helst under prøveperioden.",
   faqQuotaCalc: "Hvordan beregnes tegnkvoten?",
@@ -481,5 +482,40 @@ export const da: TranslationType = {
       testimonial7Content: "Som professionel stemmeskuespiller har jeg høje krav til lydkvalitet. Kvaliteten af stemmekloneringen på denne platform er imponerende og bevarer følgende originalstemmens emotionelle nuance.",
       testimonial8Name: "Fru Huang",
       testimonial8Role: "Uddannelsesekspert",
-      testimonial8Content: "Efter at have klonet min stemme på denne platform kan jeg forudindspille undervisningsmateriale, så eleverne kan høre mine forklaringer når som helst i eget tempo."
-  } as const;
+      testimonial8Content: "Efter at have klonet min stemme på denne platform kan jeg forudindspille undervisningsmateriale, så eleverne kan høre mine forklaringer når som helst i eget tempo.",
+  
+  // Adgangskode nulstilling
+  forgotPassword: "Glemt adgangskode",
+  resetPassword: "Nulstil adgangskode",
+  newPassword: "Ny adgangskode",
+  sendResetLink: "Send nulstillingslink",
+  passwordResetSuccess: "Adgangskode nulstillet",
+  passwordResetSuccessDesc: "Din adgangskode er blevet nulstillet, omdirigerer til forsiden...",
+  invalidResetToken: "Ugyldigt eller manglende nulstillingstoken, anmod om nyt link",
+  createNewPassword: "Opret ny adgangskode til din konto",
+  redirectingToLogin: "Omdirigerer til forsiden...",
+  requestNewResetLink: "Anmod om nyt nulstillingslink",
+  emailRequired: "Indtast din e-mailadresse",
+  passwordTooShort: "Adgangskoden skal være mindst 6 tegn",
+  success: "Succes",
+  resetLinkSent: "Nulstillingslink sendt! Tjek din e-mail",
+  enterEmailForReset: "Indtast din e-mail for at modtage nulstillingslink",
+  checkEmailForInstructions: "Tjek din e-mail for nulstillingsvejledning",
+  emailMightTakeTime: "E-mailen kan tage få minutter, husk at tjekke spam-mappen",
+  backToLogin: "Tilbage til login",
+  missingResetToken: "Manglende nulstillingstoken",
+  somethingWentWrong: "Noget gik galt, prøv igen senere",
+  verifyEmailPrompt: "Bekræft din konto via e-mail. Du kan logge ind efter bekræftelse.",
+
+  // E-mail-bekræftelsesside
+  emailVerification: "E-mail-bekræftelse",
+  verifyingYourEmail: "Bekræfter din e-mailadresse",
+  verificationSuccess: "Bekræftelse succesfuld",
+  verificationFailed: "Bekræftelse mislykkedes",
+  verifying: "Bekræfter...",
+  invalidVerificationLink: "Ugyldigt bekræftelseslink",
+  verificationSuccessful: "E-mail-bekræftelse lykkedes!",
+  goToHomepage: "Gå til startsiden",
+  resendVerificationEmail: "Send bekræftelsesmail igen",
+  verificationError: "Fejl under bekræftelse"
+    } as const;

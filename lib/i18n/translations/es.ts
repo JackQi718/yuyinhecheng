@@ -12,6 +12,7 @@ export const es: TranslationType = {
   uploadFile: "Subir Archivo",
   downloadAudio: "Descargar Audio",
   selectLanguage: "Seleccionar Idioma",
+  searchLanguage: "Buscar idioma...",
   theme: "Tema",
   light: "Claro",
   dark: "Oscuro",
@@ -250,7 +251,7 @@ export const es: TranslationType = {
   // FAQ
   faq: "Preguntas Frecuentes",
   faqTrialFeatures: "¿Qué incluye la prueba?",
-  faqTrialFeaturesAnswer: "7 días con 10,000 caracteres, 50+ idiomas y controles básicos de velocidad y voz",
+  faqTrialFeaturesAnswer: "7 días con 1000 caracteres, 50+ idiomas y controles básicos de velocidad y voz",
   faqHowToTry: "¿Cómo inicio la prueba?",
   faqHowToTryAnswer: "Regístrate sin tarjeta. Actualiza a planes pagos cuando quieras",
   faqQuotaCalc: "¿Cómo se calcula la cuota?",
@@ -481,5 +482,40 @@ export const es: TranslationType = {
       testimonial7Content: "Como profesional exijo alta calidad de audio. La clonación conserva la emoción y características originales de forma impresionante.",
       testimonial8Name: "Sra. Huang",
       testimonial8Role: "Educadora",
-      testimonial8Content: "Clonar mi voz en esta plataforma me permite grabar lecciones anticipadamente, mejorando drásticamente la efectividad educativa."
+      testimonial8Content: "Clonar mi voz en esta plataforma me permite grabar lecciones anticipadamente, mejorando drásticamente la efectividad educativa.",
+  
+  // Restablecimiento de contraseña
+  forgotPassword: "Olvidé mi contraseña",
+  resetPassword: "Restablecer contraseña",
+  newPassword: "Nueva contraseña",
+  sendResetLink: "Enviar enlace de restablecimiento",
+  passwordResetSuccess: "Contraseña restablecida con éxito",
+  passwordResetSuccessDesc: "Su contraseña se ha restablecido correctamente, redirigiendo a la página principal...",
+  invalidResetToken: "Token de reinicio inválido o faltante, solicite nuevo enlace",
+  createNewPassword: "Cree una nueva contraseña para su cuenta",
+  redirectingToLogin: "Redirigiendo a la página principal...",
+  requestNewResetLink: "Solicite un nuevo enlace de restablecimiento",
+  emailRequired: "Ingrese su dirección de correo electrónico",
+  passwordTooShort: "La contraseña debe tener al menos 6 caracteres",
+  success: "Éxito",
+  resetLinkSent: "¡Enlace enviado! Revise su correo",
+  enterEmailForReset: "Ingrese su correo para recibir el enlace",
+  checkEmailForInstructions: "Revise su correo para las instrucciones",
+  emailMightTakeTime: "El correo podría tardar unos minutos, revise la carpeta de spam",
+  backToLogin: "Volver al inicio de sesión",
+  missingResetToken: "Falta token de reinicio",
+  somethingWentWrong: "Error, intente nuevamente más tarde",
+  verifyEmailPrompt: "Verifique su cuenta mediante el correo electrónico. Podrá iniciar sesión después de la verificación.",
+
+  // Página de verificación de correo electrónico
+  emailVerification: "Verificación de correo electrónico",
+  verifyingYourEmail: "Verificando su dirección de correo",
+  verificationSuccess: "Verificación exitosa",
+  verificationFailed: "Fallo de verificación",
+  verifying: "Verificando...",
+  invalidVerificationLink: "Enlace de verificación inválido",
+  verificationSuccessful: "¡Verificación de correo exitosa!",
+  goToHomepage: "Ir a la página principal",
+  resendVerificationEmail: "Reenviar correo de verificación",
+  verificationError: "Error durante la verificación"
     } as const;

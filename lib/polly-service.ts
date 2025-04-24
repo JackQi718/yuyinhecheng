@@ -3,7 +3,7 @@ import { pollyClient } from "./aws-config";
 import { AudioCache } from './audio-cache';
 import { openai, TTS_MODEL } from './openai';
 
-import { getVoicesByLanguage } from './voice-config';
+import { getVoicesByLanguage, AWS_NTTS_VOICES } from './voice-config';
 const voiceConfig = {
   "fr-FR": {
     female: "Lea" as VoiceId,
@@ -84,6 +84,7 @@ const languageCodeMap = {
   "en-GB": "en-GB" as LanguageCode,
   "en-AU": "en-AU" as LanguageCode,
   "zh-CN": "cmn-CN" as LanguageCode,
+  "cmn-CN": "cmn-CN" as LanguageCode,
   "fr-FR": "fr-FR" as LanguageCode,
   "es-ES": "es-ES" as LanguageCode,
   "es-MX": "es-MX" as LanguageCode,
@@ -117,6 +118,7 @@ const languageCodeMap = {
   "en-IE": "en-IE" as LanguageCode,
   "en-NZ": "en-NZ" as LanguageCode,
   "en-ZA": "en-ZA" as LanguageCode,
+  "en-SG": "en-SG" as LanguageCode,
   "fr-BE": "fr-BE" as LanguageCode,
   "nl-BE": "nl-BE" as LanguageCode,
   "ar-AE": "ar-AE" as LanguageCode,
@@ -152,7 +154,15 @@ const minimaxVoiceMap = {
 };
 
 // 服务提供商类型
-export type SpeechService = 'aws' | 'minimax' | 'openai';
+export type SpeechService = 'aws' | 'aws-ntts' | 'minimax' | 'openai';
+
+// 获取服务对应的提供商
+export function getProviderFromService(service: SpeechService): 'aws' | 'minimax' | 'openai' {
+  if (service === 'aws-ntts') {
+    return 'aws';
+  }
+  return service as 'aws' | 'minimax' | 'openai';
+}
 
 // 语音合成选项
 export interface SpeechOptions {
@@ -168,6 +178,7 @@ export interface SpeechOptions {
 // 字符限制
 export const SERVICE_LIMITS: Record<SpeechService, number> = {
   aws: 100000,
+  'aws-ntts': 100000,
   minimax: 10000,
   openai: 2000
 };
@@ -191,6 +202,24 @@ export async function synthesizeSpeech({
   useClonedVoice?: boolean;
   clonedVoiceId?: string;
 }): Promise<ArrayBuffer> {
+  // 检查当前选择的语言是否支持指定的引擎
+  if (service === 'aws-ntts') {
+    const nttsLanguages = AWS_NTTS_VOICES.map(lang => lang.languageCode);
+    
+    // 如果当前语言不支持神经引擎，切换到支持神经引擎的默认语言
+    if (!nttsLanguages.includes(language)) {
+      console.warn(`语言 ${language} 不支持神经引擎，将使用默认的英语语言`);
+      language = 'en-US'; // 默认切换到美式英语
+      
+      // 获取该语言的默认神经引擎声音
+      const defaultVoice = AWS_NTTS_VOICES.find(v => v.languageCode === 'en-US')?.defaultVoice;
+      if (defaultVoice) {
+        voiceId = defaultVoice;
+        console.log(`已自动选择神经引擎支持的声音: ${voiceId}`);
+      }
+    }
+  }
+
   if (service === 'minimax') {
     // 转换语言代码
     const minimaxLanguage = getMinimaxLanguageCode(language);
@@ -244,11 +273,40 @@ export async function synthesizeSpeech({
     }
 
     // 2. 根据服务选择生成方式
-    const audioData = (service as 'minimax' | 'aws' | 'openai') === 'minimax'
-      ? await synthesizeWithMinimax(text, language, true)
-      : (service as 'minimax' | 'aws' | 'openai') === 'openai'
-        ? await synthesizeWithOpenai(text, language, voiceId, speed)
-        : await synthesizeWithPolly(text, language, { voiceId: voiceId as VoiceId, engine }, speed);
+    let audioData: ArrayBuffer;
+    
+    if (service === 'openai') {
+      audioData = await synthesizeWithOpenai(text, language, voiceId, speed);
+    } else if (service === 'aws-ntts') {
+      // 使用神经引擎前检查声音是否支持
+      const neuralVoices = AWS_NTTS_VOICES.flatMap(lang => lang.voices.map(voice => voice.id));
+      const voiceSupportsNeural = neuralVoices.includes(voiceId);
+      
+      if (!voiceSupportsNeural) {
+        // 如果声音不支持神经引擎，尝试找到同语言下支持神经引擎的声音
+        const languageGroup = AWS_NTTS_VOICES.find(lang => lang.languageCode === language);
+        if (languageGroup && languageGroup.voices.length > 0) {
+          // 使用支持神经引擎的默认声音
+          console.log(`声音 ${voiceId} 不支持神经引擎，切换到 ${languageGroup.defaultVoice}`);
+          audioData = await synthesizeWithPolly(
+            text, 
+            language, 
+            { voiceId: languageGroup.defaultVoice as VoiceId, engine: 'neural' }, 
+            speed
+          );
+        } else {
+          // 如果这个语言没有支持神经引擎的声音，回退到标准引擎
+          console.log(`语言 ${language} 没有支持神经引擎的声音，使用标准引擎`);
+          audioData = await synthesizeWithPolly(text, language, { voiceId: voiceId as VoiceId, engine: 'standard' }, speed);
+        }
+      } else {
+        // 声音支持神经引擎
+        audioData = await synthesizeWithPolly(text, language, { voiceId: voiceId as VoiceId, engine: 'neural' }, speed);
+      }
+    } else {
+      // 默认AWS标准引擎
+      audioData = await synthesizeWithPolly(text, language, { voiceId: voiceId as VoiceId, engine: 'standard' }, speed);
+    }
 
     // 3. 存入缓存
     AudioCache.set(cacheKey, audioData);
@@ -274,7 +332,15 @@ const minimaxLanguageMap = {
   'uk-UA': 'uk',
   'th-TH': 'th',
   'tr-TR': 'tr',
-  'ar-SA': 'ar'
+  'ar-SA': 'ar',
+  'nl-NL': 'nl',
+  'pl-PL': 'pl',
+  'ro-RO': 'ro',
+  'el-GR': 'el',
+  'cs-CZ': 'cs',
+  'fi-FI': 'fi',
+  'hi-IN': 'hi',
+  'yue-CN': 'yue'
 } as const;
 
 function isMinimaxSupported(language: string): boolean {
@@ -483,12 +549,28 @@ async function synthesizeWithPolly(
       throw new Error("语音ID不能为空");
     }
 
+    // 查找此voice是否支持指定的engine
+    let isEngineSupported = true;
+    
+    if (engine === 'neural') {
+      // 检查所选声音是否支持神经引擎
+      const neuralVoices = AWS_NTTS_VOICES.flatMap(lang => lang.voices.map(voice => voice.id));
+      isEngineSupported = neuralVoices.includes(voiceId);
+      
+      if (!isEngineSupported) {
+        console.warn(`声音 ${voiceId} 不支持神经引擎，将使用标准引擎代替`);
+      }
+    }
+    
+    // 如果不支持神经引擎，则使用标准引擎
+    const finalEngine = isEngineSupported ? engine : 'standard';
+
     // 使用 AbortController 设置超时
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 10000); // 10秒超时
 
     const input: SynthesizeSpeechCommandInput = {
-      Engine: engine,
+      Engine: finalEngine,
       LanguageCode: languageCode,
       OutputFormat: "mp3",
       SampleRate: "24000",
@@ -580,7 +662,15 @@ export const minimaxLanguages = {
   'uk-UA': 'uk',
   'th-TH': 'th',
   'tr-TR': 'tr',
-  'ar-SA': 'ar'
+  'ar-SA': 'ar',
+  'nl-NL': 'nl',
+  'pl-PL': 'pl',
+  'ro-RO': 'ro',
+  'el-GR': 'el',
+  'cs-CZ': 'cs',
+  'fi-FI': 'fi',
+  'hi-IN': 'hi',
+  'yue-CN': 'yue'
 } as const;
 
 export async function playMinimaxAudio(audioData: ArrayBuffer, speed: number = 1): Promise<PlayAudioResult> {

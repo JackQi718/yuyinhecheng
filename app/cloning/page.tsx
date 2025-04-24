@@ -25,7 +25,7 @@ import { useRouter } from "next/navigation";
 
 interface Language {
   code: string;
-  nameKey: 'chinese' | 'english' | 'japanese' | 'korean' | 'spanish' | 'french' | 'russian' | 'italian' | 'portuguese' | 'german' | 'indonesian' | 'arabic' | 'cantonese' | 'danish' | 'dutch' | 'finnish' | 'greek' | 'hebrew' | 'hindi' | 'hungarian' | 'norwegian' | 'polish' | 'romanian' | 'swedish' | 'turkish' | 'welsh' | 'britishEnglish' | 'australianEnglish' | 'mexicanSpanish' | 'usSpanish' |  'canadianFrench' | 'belgianFrench' | 'brazilianPortuguese' | 'austrianGerman' | 'swissGerman' | 'uaeArabic' | 'belgianDutch' | 'indianEnglish' | 'welshEnglish' | 'irishEnglish' | 'newZealandEnglish' | 'southAfricanEnglish' | 'icelandic' | 'catalan' | 'czech' | 'vietnamese' | 'ukrainian';
+  nameKey: 'chinese' | 'english' | 'japanese' | 'korean' | 'spanish' | 'french' | 'russian' | 'italian' | 'portuguese' | 'german' | 'indonesian' | 'arabic' | 'cantonese' | 'danish' | 'dutch' | 'finnish' | 'greek' | 'hebrew' | 'hindi' | 'hungarian' | 'norwegian' | 'polish' | 'romanian' | 'swedish' | 'turkish' | 'welsh' | 'britishEnglish' | 'australianEnglish' | 'mexicanSpanish' | 'usSpanish' |  'canadianFrench' | 'belgianFrench' | 'brazilianPortuguese' | 'austrianGerman' | 'swissGerman' | 'uaeArabic' | 'belgianDutch' | 'indianEnglish' | 'welshEnglish' | 'irishEnglish' | 'newZealandEnglish' | 'southAfricanEnglish' | 'singaporeanEnglish' | 'icelandic' | 'catalan' | 'czech' | 'vietnamese' | 'ukrainian' | 'thai';
 }
 
 interface CloneQuota {
@@ -42,6 +42,7 @@ interface ClonedVoice {
 
 const MINIMAX_LANGUAGES = [
   { code: 'zh-CN', nameKey: 'chinese' as const },
+  { code: 'yue-CN', nameKey: 'cantonese' as const },
   { code: 'en-US', nameKey: 'english' as const },
   { code: 'ja-JP', nameKey: 'japanese' as const },
   { code: 'ko-KR', nameKey: 'korean' as const },
@@ -51,11 +52,19 @@ const MINIMAX_LANGUAGES = [
   { code: 'it-IT', nameKey: 'italian' as const },
   { code: 'pt-PT', nameKey: 'portuguese' as const },
   { code: 'de-DE', nameKey: 'german' as const },
+  { code: 'id-ID', nameKey: 'indonesian' as const },
   { code: 'vi-VN', nameKey: 'vietnamese' as const },
   { code: 'uk-UA', nameKey: 'ukrainian' as const },
+  { code: 'th-TH', nameKey: 'thai' as const },
   { code: 'tr-TR', nameKey: 'turkish' as const },
-  { code: 'id-ID', nameKey: 'indonesian' as const },
-  { code: 'ar-SA', nameKey: 'arabic' as const }
+  { code: 'ar-SA', nameKey: 'arabic' as const },
+  { code: 'nl-NL', nameKey: 'dutch' as const },
+  { code: 'pl-PL', nameKey: 'polish' as const },
+  { code: 'ro-RO', nameKey: 'romanian' as const },
+  { code: 'el-GR', nameKey: 'greek' as const },
+  { code: 'cs-CZ', nameKey: 'czech' as const },
+  { code: 'fi-FI', nameKey: 'finnish' as const },
+  { code: 'hi-IN', nameKey: 'hindi' as const }
 ] as const;
 
 const SERVICE_LIMITS = {
@@ -788,8 +797,26 @@ export default function Cloning() {
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent className="max-h-[40vh] overflow-y-auto">
+                            <div className="px-3 py-2 sticky top-0 bg-background z-10 border-b">
+                              <input
+                                className="w-full h-8 px-2 text-sm border rounded focus:outline-none focus:ring-1 focus:ring-primary"
+                                placeholder={t('searchLanguage')}
+                                onChange={(e) => {
+                                  const searchElement = e.target.parentElement?.parentElement?.querySelectorAll('.language-item');
+                                  const searchText = e.target.value.toLowerCase();
+                                  searchElement?.forEach((item) => {
+                                    const text = item.textContent?.toLowerCase() || '';
+                                    if (text.includes(searchText)) {
+                                      (item as HTMLElement).style.display = 'block';
+                                    } else {
+                                      (item as HTMLElement).style.display = 'none';
+                                    }
+                                  });
+                                }}
+                              />
+                            </div>
                             {MINIMAX_LANGUAGES.map((lang) => (
-                              <SelectItem key={lang.code} value={lang.code}>
+                              <SelectItem key={lang.code} value={lang.code} className="language-item">
                                 {t(lang.nameKey)}
                               </SelectItem>
                             ))}

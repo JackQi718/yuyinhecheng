@@ -77,21 +77,28 @@ export async function createUser(data: {
       console.log('用户已存在:', existingUser);
       return existingUser;
     }
+
+    // 判断是否是社交登录
+    const isOAuthLogin = !!provider && !!providerId;
     
-    // 使用 RETURNING * 来获取所有插入的数据
-    const result = await query(
-      `INSERT INTO users (id, email, password, name, image, provider, provider_id) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7) 
-       RETURNING *`,
-      [id, email, password, name || null, image || null, provider || null, providerId || null]
-    );
+    // 使用 Prisma 创建用户
+    // 社交登录的用户直接验证邮箱，密码注册的用户需要验证
+    const user = await prisma.users.create({
+      data: {
+        id,
+        email,
+        password,
+        name: name || null,
+        image: image || null,
+        provider,
+        provider_id: providerId,
+        emailVerified: isOAuthLogin ? new Date() : null,
+        status: isOAuthLogin ? 'active' : 'pending'
+      }
+    });
     
-    if (!result || result.length === 0) {
-      throw new Error('用户创建失败：没有返回数据');
-    }
-    
-    console.log('用户创建成功，返回数据:', result[0]);
-    return result[0];
+    console.log('用户创建成功，返回数据:', user);
+    return user;
   } catch (error: any) {
     console.error('创建用户失败:', error);
     // 如果是唯一约束冲突，返回特定错误

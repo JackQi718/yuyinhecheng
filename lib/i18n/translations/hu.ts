@@ -12,6 +12,7 @@ export const hu: TranslationType = {
   uploadFile: "Fájl feltöltése",
   downloadAudio: "Hang letöltése",
   selectLanguage: "Nyelv kiválasztása",
+  searchLanguage: "Nyelv keresése...",
   theme: "Téma",
   light: "Világos",
   dark: "Sötét",
@@ -250,7 +251,7 @@ export const hu: TranslationType = {
   // FAQ
   faq: "Gyakran Ismételt Kérdések",
   faqTrialFeatures: "Mit tartalmaz a próbaverzió?",
-  faqTrialFeaturesAnswer: "7 nap, 10 000 karakter, 50+ nyelv, alap sebesség- és hangbeállítások",
+  faqTrialFeaturesAnswer: "7 nap, 1000 karakter, 50+ nyelv, alap sebesség- és hangbeállítások",
   faqHowToTry: "Hogyan kezdjem el a próbaverziót?",
   faqHowToTryAnswer: "Regisztráljon bankszámla nélkül is. Bármikor frissíthet fizetős csomagra.",
   faqQuotaCalc: "Hogyan számítják a karakterkvótát?",
@@ -481,5 +482,40 @@ export const hu: TranslationType = {
       testimonial7Content: "Szakmámból adódóan magas hangminőséget követelő vagyok. A platform klónozási minősége lenyűgözően őrzi meg az eredeti hang érzelmi árnyalatait és jellegzetességeit.",
       testimonial8Name: "Huang asszony",
       testimonial8Role: "Oktató",
-      testimonial8Content: "Hangom klónozása után előre felvételeket készíthetek, így a tanulók bármikor hallgathatják magyarázataimat, jelentősen javítva a tanítás hatékonyságát."
+      testimonial8Content: "Hangom klónozása után előre felvételeket készíthetek, így a tanulók bármikor hallgathatják magyarázataimat, jelentősen javítva a tanítás hatékonyságát.",
+  
+  // Jelszó-visszaállítási folyamat
+  forgotPassword: "Elfelejtett jelszó",
+  resetPassword: "Jelszó visszaállítása",
+  newPassword: "Új jelszó",
+  sendResetLink: "Visszaállító link küldése",
+  passwordResetSuccess: "Jelszó visszaállítása sikeres",
+  passwordResetSuccessDesc: "Jelszava sikeresen megváltoztatva, átirányítás a kezdőlapra...",
+  invalidResetToken: "Érvénytelen vagy hiányzó visszaállító token, kérjen új linket",
+  createNewPassword: "Hozzon létre új jelszót fiókjához",
+  redirectingToLogin: "Átirányítás a kezdőlapra...",
+  requestNewResetLink: "Kérjen új visszaállító linket",
+  emailRequired: "Kérjük, adja meg email címét",
+  passwordTooShort: "A jelszónak legalább 6 karakter hosszúnak kell lennie",
+  success: "Siker",
+  resetLinkSent: "Visszaállító link elküldve! Ellenőrizze az emailjeit",
+  enterEmailForReset: "Adja meg email címét a visszaállító link fogadásához",
+  checkEmailForInstructions: "Ellenőrizze emailjeit a visszaállítási útmutatóért",
+  emailMightTakeTime: "Az email kézbesítése néhány percig is eltarthat, ne felejtse el a spam mappát",
+  backToLogin: "Vissza a bejelentkezéshez",
+  missingResetToken: "Hiányzó visszaállító token",
+  somethingWentWrong: "Hiba történt, kérjük próbálja újra később",
+  verifyEmailPrompt: "Erősítse meg fiókját emailben. Bejelentkezés után hitelesítheti.",
+
+  // E-mail megerősítő oldal
+  emailVerification: "E-mail megerősítés",
+  verifyingYourEmail: "E-mail cím ellenőrzése folyamatban",
+  verificationSuccess: "Sikeres ellenőrzés",
+  verificationFailed: "Sikertelen ellenőrzés",
+  verifying: "Ellenőrzés folyamatban...",
+  invalidVerificationLink: "Érvénytelen megerősítési link",
+  verificationSuccessful: "E-mail cím sikeresen megerősítve!",
+  goToHomepage: "Ugrás a kezdőlapra",
+  resendVerificationEmail: "Megerősítő e-mail újraküldése",
+  verificationError: "Hiba történt az ellenőrzés során"
     } as const;

@@ -120,7 +120,7 @@ export async function GET() {
           id: crypto.randomUUID(),
           userId: user.id,
           permanentQuota: 0,
-          temporaryQuota: 10000, // 保持默认10000字符配额
+          temporaryQuota: 1000, // 保持默认1000字符配额
           usedCharacters: 0,
           quotaExpiry: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7天后过期
           lastUpdated: new Date(),

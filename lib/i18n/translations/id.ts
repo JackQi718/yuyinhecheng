@@ -12,6 +12,7 @@ export const id: TranslationType = {
   uploadFile: "Unggah Berkas",
   downloadAudio: "Unduh Audio",
   selectLanguage: "Pilih Bahasa",
+  searchLanguage: "Cari bahasa...",
   theme: "Tema",
   light: "Terang",
   dark: "Gelap",
@@ -252,7 +253,7 @@ export const id: TranslationType = {
   // FAQ
   faq: "Pertanyaan Umum",
   faqTrialFeatures: "Fitur apa yang ada di uji coba?",
-  faqTrialFeaturesAnswer: "Uji coba 7 hari dengan 10.000 karakter, dukungan 50+ bahasa, kontrol kecepatan dasar, dan pemilihan suara.",
+  faqTrialFeaturesAnswer: "Uji coba 7 hari dengan 1000 karakter, dukungan 50+ bahasa, kontrol kecepatan dasar, dan pemilihan suara.",
   faqHowToTry: "Cara mulai uji coba?",
   faqHowToTryAnswer: "Cukup daftar akun tanpa kartu kredit. Bisa upgrade ke paket berbayar kapan saja.",
   faqQuotaCalc: "Bagaimana kuota karakter dihitung?",
@@ -483,5 +484,40 @@ export const id: TranslationType = {
       testimonial7Content: "Sebagai profesional, kualitas suara klon di platform ini mengesankan - mempertahankan emosi dan karakteristik suara asli.",
       testimonial8Name: "Ny. Huang",
       testimonial8Role: "Pengajar",
-      testimonial8Content: "Dengan klon suara saya di platform ini, materi pelajaran bisa direkam sebelumnya dan diakses siswa kapan saja."
+      testimonial8Content: "Dengan klon suara saya di platform ini, materi pelajaran bisa direkam sebelumnya dan diakses siswa kapan saja.",
+  
+  // Proses Reset Kata Sandi
+  forgotPassword: "Lupa Kata Sandi",
+  resetPassword: "Atur Ulang Kata Sandi",
+  newPassword: "Kata Sandi Baru",
+  sendResetLink: "Kirim Tautan Reset",
+  passwordResetSuccess: "Reset Kata Sandi Berhasil",
+  passwordResetSuccessDesc: "Kata sandi Anda berhasil direset, sedang mengarahkan ke beranda...",
+  invalidResetToken: "Token reset tidak valid atau hilang, mohon minta tautan reset baru",
+  createNewPassword: "Buat Kata Sandi Baru untuk Akun Anda",
+  redirectingToLogin: "Sedang mengarahkan ke beranda...",
+  requestNewResetLink: "Mohon minta tautan reset baru",
+  emailRequired: "Masukkan alamat email Anda",
+  passwordTooShort: "Kata sandi harus minimal 6 karakter",
+  success: "Berhasil",
+  resetLinkSent: "Tautan reset terkirim! Periksa email Anda",
+  enterEmailForReset: "Masukkan email untuk menerima tautan reset",
+  checkEmailForInstructions: "Periksa email untuk panduan reset kata sandi",
+  emailMightTakeTime: "Email mungkin butuh beberapa menit, jangan lupa cek folder spam",
+  backToLogin: "Kembali ke Login",
+  missingResetToken: "Token reset tidak ditemukan",
+  somethingWentWrong: "Terjadi kesalahan, silakan coba lagi nanti",
+  verifyEmailPrompt: "Verifikasi akun melalui email. Setelah verifikasi, Anda bisa login.",
+
+  // Halaman Verifikasi Email
+  emailVerification: "Verifikasi Email",
+  verifyingYourEmail: "Memverifikasi alamat email Anda",
+  verificationSuccess: "Verifikasi Berhasil",
+  verificationFailed: "Verifikasi Gagal",
+  verifying: "Sedang memverifikasi...",
+  invalidVerificationLink: "Tautan Verifikasi Tidak Valid",
+  verificationSuccessful: "Verifikasi Email Berhasil!",
+  goToHomepage: "Ke Beranda Utama",
+  resendVerificationEmail: "Kirim Ulang Email Verifikasi",
+  verificationError: "Kesalahan dalam Proses Verifikasi"
     } as const;

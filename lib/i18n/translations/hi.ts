@@ -12,6 +12,7 @@ export const hi: TranslationType = {
   uploadFile: "फ़ाइल अपलोड करें",
   downloadAudio: "ऑडियो डाउनलोड करें",
   selectLanguage: "भाषा चुनें",
+  searchLanguage: "भाषा खोजें...",
   theme: "थीम",
   light: "हल्का",
   dark: "डार्क",
@@ -250,7 +251,7 @@ export const hi: TranslationType = {
   // FAQ
   faq: "अक्सर पूछे जाने वाले प्रश्न",
   faqTrialFeatures: "ट्रायल में कौन सी सुविधाएँ शामिल हैं?",
-  faqTrialFeaturesAnswer: "7-दिवसीय ट्रायल, 10,000 वर्ण, 50+ भाषाएं, मूल गति नियंत्रण और आवाज़ चयन उपलब्ध",
+  faqTrialFeaturesAnswer: "7-दिवसीय ट्रायल, 1000 वर्ण, 50+ भाषाएं, मूल गति नियंत्रण और आवाज़ चयन उपलब्ध",
   faqHowToTry: "ट्रायल कैसे शुरू करें?",
   faqHowToTryAnswer: "निःशुल्क खाता पंजीकरण करें। क्रेडिट कार्ड की आवश्यकता नहीं",
   faqQuotaCalc: "वर्ण कोटा गणना कैसे होती है?",
@@ -481,5 +482,40 @@ export const hi: TranslationType = {
       testimonial7Content: "एक पेशेवर के रूप में स्वर गुणवत्ता पर मेरी उच्च अपेक्षाएँ हैं। यह प्लेटफॉर्म मूल स्वर के भावनात्मक सार तथा विशिष्टताओं का संरक्षण करते हुए प्रभावशाली क्लोनिंग प्रदान करता है",
       testimonial8Name: "सुश्री हुआंग",
       testimonial8Role: "शिक्षाशास्त्री",
-      testimonial8Content: "इस प्लेटफॉर्म पर स्वर क्लोनिंग के पश्चात, मैं पाठ्य सामग्री पूर्व-अभिलेखित कर छात्रों की सुविधानुसार उपलब्ध करा सकती हूँ, जिससे शैक्षणिक प्रभावशीलता में उल्लेखनीय वृद्धि हुई है"
-} as const;
+      testimonial8Content: "इस प्लेटफॉर्म पर स्वर क्लोनिंग के पश्चात, मैं पाठ्य सामग्री पूर्व-अभिलेखित कर छात्रों की सुविधानुसार उपलब्ध करा सकती हूँ, जिससे शैक्षणिक प्रभावशीलता में उल्लेखनीय वृद्धि हुई है",
+
+// पासवर्ड रीसेट संबंधित
+forgotPassword: "पासवर्ड भूल गए",
+resetPassword: "पासवर्ड रीसेट करें",
+newPassword: "नया पासवर्ड",
+sendResetLink: "रीसेट लिंक भेजें",
+passwordResetSuccess: "पासवर्ड रीसेट सफल",
+passwordResetSuccessDesc: "आपका पासवर्ड सफलतापूर्वक रीसेट हो गया है, होमपेज पर पुनर्निर्देशित किया जा रहा है...",
+invalidResetToken: "अमान्य या गुम रीसेट टोकन, कृपया नया रीसेट लिंक प्राप्त करें",
+createNewPassword: "अपने खाते के लिए नया पासवर्ड बनाएँ",
+redirectingToLogin: "होमपेज पर पुनर्निर्देशित किया जा रहा है...",
+requestNewResetLink: "कृपया नया रीसेट लिंक प्राप्त करें",
+emailRequired: "कृपया अपना ईमेल पता दर्ज करें",
+passwordTooShort: "पासवर्ड कम से कम 6 अक्षरों का होना चाहिए",
+success: "सफलता",
+resetLinkSent: "रीसेट लिंक भेज दिया गया! कृपया अपना ईमेल जाँचें",
+enterEmailForReset: "पासवर्ड रीसेट लिंक प्राप्त करने के लिए ईमेल दर्ज करें",
+checkEmailForInstructions: "रीसेट निर्देशों के लिए अपना ईमेल जाँचें",
+emailMightTakeTime: "ईमेल आने में कुछ मिनट लग सकते हैं, स्पैम फ़ोल्डर जाँचना न भूलें",
+backToLogin: "लॉगिन पर वापस जाएँ",
+missingResetToken: "रीसेट टोकन अनुपलब्ध",
+somethingWentWrong: "त्रुटि हुई, कृपया बाद में पुनः प्रयास करें",
+verifyEmailPrompt: "कृपया खाता सत्यापन के लिए अपना ईमेल जाँचें। सत्यापन के बाद लॉगिन कर सकते हैं।",
+
+// ईमेल सत्यापन पृष्ठ
+emailVerification: "ईमेल सत्यापन",
+verifyingYourEmail: "आपका ईमेल पता सत्यापित किया जा रहा है",
+verificationSuccess: "सत्यापन सफल",
+verificationFailed: "सत्यापन विफल",
+verifying: "सत्यापन जारी है...",
+invalidVerificationLink: "अमान्य सत्यापन लिंक",
+verificationSuccessful: "ईमेल सत्यापन सफल रहा!",
+goToHomepage: "मुखपृष्ठ पर जाएँ",
+resendVerificationEmail: "सत्यापन ईमेल पुनः भेजें",
+verificationError: "सत्यापन प्रक्रिया में त्रुटि आई"
+    } as const;

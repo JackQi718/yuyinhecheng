@@ -12,6 +12,7 @@ export const ja: TranslationType = {
   uploadFile: "ファイルをアップロード",
   downloadAudio: "音声をダウンロード",
   selectLanguage: "言語を選択",
+  searchLanguage: "言語を検索...",
   theme: "テーマ",
   light: "ライト",
   dark: "ダーク",
@@ -250,7 +251,7 @@ export const ja: TranslationType = {
   // FAQ
   faq: "よくある質問",
   faqTrialFeatures: "トライアルで利用可能な機能は？",
-  faqTrialFeaturesAnswer: "トライアルでは10,000文字/7日間利用可能。50+言語対応、基本速度調節、声質選択が含まれます。コア機能をテキスト入力で体験可能です",
+  faqTrialFeaturesAnswer: "トライアルでは1000文字/7日間利用可能。50+言語対応、基本速度調節、声質選択が含まれます。コア機能をテキスト入力で体験可能です",
   faqHowToTry: "トライアル開始方法は？",
   faqHowToTryAnswer: "クレジットカード不要でアカウント登録後すぐ開始。期間中いつでも有料プランにアップグレード可能です",
   faqQuotaCalc: "文字数計算方法は？",
@@ -481,5 +482,40 @@ export const ja: TranslationType = {
       testimonial7Content: "音声品質に高い要求を持つプロとして、このプラットフォームの音声クローン品質は印象的です。感情ニュアンスを正確に保持",
       testimonial8Name: "黄様",
       testimonial8Role: "教育者",
-      testimonial8Content: "音声クローンで授業コンテンツを事前録音可能に。学生がいつでもアクセス可能で教育効果を大幅に向上"
+      testimonial8Content: "音声クローンで授業コンテンツを事前録音可能に。学生がいつでもアクセス可能で教育効果を大幅に向上",
+  
+  // パスワードリセット関連
+  forgotPassword: "パスワードをお忘れの場合",
+  resetPassword: "パスワードのリセット",
+  newPassword: "新しいパスワード",
+  sendResetLink: "リセットリンクを送信",
+  passwordResetSuccess: "パスワードリセット完了",
+  passwordResetSuccessDesc: "パスワードが正常にリセットされました。ホームページへ移動します...",
+  invalidResetToken: "無効または存在しないリセットトークンです。新しいリセットリンクを申請してください",
+  createNewPassword: "アカウントの新しいパスワードを作成",
+  redirectingToLogin: "ホームページへ移動中...",
+  requestNewResetLink: "新しいリセットリンクを再申請してください",
+  emailRequired: "メールアドレスを入力してください",
+  passwordTooShort: "パスワードは6文字以上必要です",
+  success: "成功",
+  resetLinkSent: "リセットリンクを送信しました！メールを確認してください",
+  enterEmailForReset: "パスワードリセットリンクを受け取るにはメールアドレスを入力してください",
+  checkEmailForInstructions: "パスワードリセット手順のメールを確認してください",
+  emailMightTakeTime: "メールが届くまで数分かかる場合があります。迷惑メールフォルダもご確認ください",
+  backToLogin: "ログインに戻る",
+  missingResetToken: "リセットトークンが存在しません",
+  somethingWentWrong: "エラーが発生しました。後ほど再度お試しください",
+  verifyEmailPrompt: "メールアドレスの確認をお願いします。確認後にログイン可能になります。",
+
+  // メール認証ページ
+  emailVerification: "メール認証",
+  verifyingYourEmail: "メールアドレスを確認中です",
+  verificationSuccess: "認証成功",
+  verificationFailed: "認証失敗",
+  verifying: "認証中...",
+  invalidVerificationLink: "無効な認証リンク",
+  verificationSuccessful: "メール認証が成功しました！",
+  goToHomepage: "ホームページへ移動",
+  resendVerificationEmail: "認証メールを再送信",
+  verificationError: "認証処理中にエラーが発生しました"
     } as const;

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { createUser, getUserByEmail } from '@/lib/db';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
-import { signIn } from 'next-auth/react';
+import { createVerificationTokenAndSendEmail } from '@/lib/verification';
 
 const registerSchema = z.object({
   email: z.string().email(),
@@ -56,15 +56,25 @@ export async function POST(req: Request) {
       throw new Error('用户创建后无法查询到');
     }
 
+    try {
+      // 创建验证令牌并发送验证邮件
+      console.log('创建验证令牌并发送邮件...');
+      await createVerificationTokenAndSendEmail(user.id, email, name);
+      console.log('验证邮件发送成功');
+    } catch (emailError) {
+      console.error('发送验证邮件失败:', emailError);
+      // 即使发送邮件失败，用户也已经创建，继续返回成功
+    }
+
     return NextResponse.json(
       { 
-        message: '注册成功',
+        message: '注册成功，请查收验证邮件激活账户',
         user: {
           id: user.id,
           email: user.email,
           name: user.name,
         },
-        redirect: '/auth/login?registered=true'
+        redirect: '/auth/login?registered=true&verification=email'
       },
       { status: 201 }
     );

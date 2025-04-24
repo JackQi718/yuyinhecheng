@@ -12,8 +12,8 @@ import { Volume2, Upload, Languages, Sun, Moon, Globe, Download, Pause, Play } f
 import { useTheme } from "next-themes";
 import { useToast } from "@/components/ui/use-toast";
 import { useLanguage } from "@/lib/i18n/language-context";
-import { synthesizeSpeech, playPollyAudio, hasSingleVoice, downloadAudio, SpeechService, minimaxLanguages, playMinimaxAudio, SERVICE_LIMITS } from "@/lib/polly-service";
-import { getSupportedLanguages } from "@/lib/voice-config";
+import { synthesizeSpeech, playPollyAudio, hasSingleVoice, downloadAudio, SpeechService, minimaxLanguages, playMinimaxAudio, SERVICE_LIMITS, getProviderFromService } from "@/lib/polly-service";
+import { getSupportedLanguages, getVoicesByLanguage, VoiceOption } from "@/lib/voice-config";
 import { useSpeech } from '@/hooks/use-speech';
 import { AudioVisualizer } from "@/components/audio-visualizer";
 import { NavBar } from "@/components/nav-bar";
@@ -22,16 +22,16 @@ import { RequireAuth } from "@/components/require-auth";
 import { useSession } from "next-auth/react";
 import { useAnalytics } from '@/hooks/use-analytics';
 import { VoiceSelector } from '@/components/voice-selector';
-import { VoiceOption } from "@/lib/voice-config";
 import { VoiceId } from "@aws-sdk/client-polly";
 
 interface Language {
   code: string;
-  nameKey: 'chinese' | 'english' | 'japanese' | 'korean' | 'spanish' | 'french' | 'russian' | 'italian' | 'portuguese' | 'german' | 'indonesian' | 'arabic' | 'cantonese' | 'danish' | 'dutch' | 'finnish' | 'greek' | 'hebrew' | 'hindi' | 'hungarian' | 'norwegian' | 'polish' | 'romanian' | 'swedish' | 'turkish' | 'welsh' | 'britishEnglish' | 'australianEnglish' | 'mexicanSpanish' | 'usSpanish' |  'canadianFrench' | 'belgianFrench' | 'brazilianPortuguese' | 'austrianGerman' | 'swissGerman' | 'uaeArabic' | 'belgianDutch' | 'indianEnglish' | 'welshEnglish' | 'irishEnglish' | 'newZealandEnglish' | 'southAfricanEnglish' | 'icelandic' | 'catalan' | 'czech' | 'vietnamese' | 'ukrainian' | 'afrikaans' | 'bulgarian' | 'croatian' | 'lithuanian' | 'latvian' | 'macedonian' | 'malay' | 'serbian' | 'slovak' | 'slovenian' | 'swahili' | 'tamil' | 'thai' | 'urdu' | 'traditionalChinese' | 'saudiArabic';
+  nameKey: 'chinese' | 'english' | 'japanese' | 'korean' | 'spanish' | 'french' | 'russian' | 'italian' | 'portuguese' | 'german' | 'indonesian' | 'arabic' | 'cantonese' | 'danish' | 'dutch' | 'finnish' | 'greek' | 'hebrew' | 'hindi' | 'hungarian' | 'norwegian' | 'polish' | 'romanian' | 'swedish' | 'turkish' | 'welsh' | 'britishEnglish' | 'australianEnglish' | 'mexicanSpanish' | 'usSpanish' |  'canadianFrench' | 'belgianFrench' | 'brazilianPortuguese' | 'austrianGerman' | 'swissGerman' | 'uaeArabic' | 'belgianDutch' | 'indianEnglish' | 'welshEnglish' | 'irishEnglish' | 'newZealandEnglish' | 'southAfricanEnglish' | 'singaporeanEnglish' | 'icelandic' | 'catalan' | 'czech' | 'vietnamese' | 'ukrainian' | 'afrikaans' | 'bulgarian' | 'croatian' | 'lithuanian' | 'latvian' | 'macedonian' | 'malay' | 'serbian' | 'slovak' | 'slovenian' | 'swahili' | 'tamil' | 'thai' | 'urdu' | 'traditionalChinese' | 'saudiArabic';
 }
 
 const MINIMAX_LANGUAGES = [
   { code: 'zh-CN', nameKey: 'chinese' as const },
+  { code: 'yue-CN', nameKey: 'cantonese' as const },
   { code: 'en-US', nameKey: 'english' as const },
   { code: 'ja-JP', nameKey: 'japanese' as const },
   { code: 'ko-KR', nameKey: 'korean' as const },
@@ -41,11 +41,19 @@ const MINIMAX_LANGUAGES = [
   { code: 'it-IT', nameKey: 'italian' as const },
   { code: 'pt-PT', nameKey: 'portuguese' as const },
   { code: 'de-DE', nameKey: 'german' as const },
+  { code: 'id-ID', nameKey: 'indonesian' as const },
   { code: 'vi-VN', nameKey: 'vietnamese' as const },
   { code: 'uk-UA', nameKey: 'ukrainian' as const },
+  { code: 'th-TH', nameKey: 'thai' as const },
   { code: 'tr-TR', nameKey: 'turkish' as const },
-  { code: 'id-ID', nameKey: 'indonesian' as const },
-  { code: 'ar-SA', nameKey: 'arabic' as const }
+  { code: 'ar-SA', nameKey: 'arabic' as const },
+  { code: 'nl-NL', nameKey: 'dutch' as const },
+  { code: 'pl-PL', nameKey: 'polish' as const },
+  { code: 'ro-RO', nameKey: 'romanian' as const },
+  { code: 'el-GR', nameKey: 'greek' as const },
+  { code: 'cs-CZ', nameKey: 'czech' as const },
+  { code: 'fi-FI', nameKey: 'finnish' as const },
+  { code: 'hi-IN', nameKey: 'hindi' as const }
 ] as const satisfies readonly Language[];
 
 const AWS_LANGUAGES: readonly Language[] = [
@@ -161,6 +169,7 @@ const OPENAI_LANGUAGES = [
 // 创建语言代码到翻译键的映射
 const languageCodeToNameKey: Record<string, string> = {
   'zh-CN': 'chinese',
+  'cmn-CN': 'chinese',
   'en-US': 'english',
   'en-GB': 'britishEnglish',
   'en-AU': 'australianEnglish',
@@ -194,6 +203,7 @@ const languageCodeToNameKey: Record<string, string> = {
   'en-IE': 'irishEnglish',
   'en-NZ': 'newZealandEnglish',
   'en-ZA': 'southAfricanEnglish',
+  'en-SG': 'singaporeanEnglish',
   'is-IS': 'icelandic',
   'nb-NO': 'norwegian',
   'pl-PL': 'polish',
@@ -564,10 +574,36 @@ export default function Home() {
     }
   };
 
-  // 跟踪语音服务切换
+  // 跟踪服务提供商切换
   const handleServiceChange = (value: SpeechService) => {
     setSpeechService(value);
-    setSelectedProvider(value);
+    setSelectedProvider(getProviderFromService(value));
+    
+    // 当切换到aws-ntts服务时，确保选择的语言是支持的
+    if (value === 'aws-ntts') {
+      // 获取支持神经引擎的语言列表
+      const supportedNTTSLanguages = getSupportedLanguages('aws-ntts').map(lang => lang.code);
+      
+      // 检查当前选择的语言是否支持神经引擎
+      // 如果当前是zh-CN，需要转换为cmn-CN
+      const checkLanguage = selectedLanguage === 'zh-CN' ? 'cmn-CN' : selectedLanguage;
+      
+      if (!supportedNTTSLanguages.includes(checkLanguage)) {
+        // 如果不支持，选择默认的支持语言（如英语）
+        setSelectedLanguage('en-US');
+        toast({
+          description: t("languageChangedToSupported"),
+          variant: "default",
+        });
+      } else if (selectedLanguage === 'zh-CN') {
+        // 如果是中文，需要切换到正确的语言代码
+        setSelectedLanguage('cmn-CN');
+      }
+    } else if (selectedLanguage === 'cmn-CN') {
+      // 如果从aws-ntts切换回其他服务，且当前语言是cmn-CN，需要切换回zh-CN
+      setSelectedLanguage('zh-CN');
+    }
+    
     analytics.trackEvent('change_service', 'settings', value);
   };
 
@@ -576,6 +612,43 @@ export default function Home() {
     setSelectedLanguage(value);
     analytics.trackEvent('change_language', 'settings', value);
   };
+
+  useEffect(() => {
+    setMounted(true);
+    // 初始化时设置正确的provider
+    setSelectedProvider(getProviderFromService(speechService));
+  }, []);
+
+  // 处理VoiceSelector组件
+  useEffect(() => {
+    if (selectedLanguage && speechService) {
+      // 确定要使用的语言代码
+      const languageToUse = 
+        speechService === 'aws-ntts' && selectedLanguage === 'zh-CN' ? 'cmn-CN' : 
+        selectedLanguage === 'cmn-CN' && speechService !== 'aws-ntts' ? 'zh-CN' : 
+        selectedLanguage;
+        
+      // 获取可用的音色
+      let availableVoices: VoiceOption[] = [];
+      
+      if (speechService === 'aws-ntts') {
+        // 对于神经引擎，直接从AWS_NTTS_VOICES中查找
+        availableVoices = getVoicesByLanguage(languageToUse, 'aws-ntts');
+      } else {
+        // 对于其他服务，使用常规的getVoicesByLanguage
+        availableVoices = getVoicesByLanguage(languageToUse, selectedProvider);
+      }
+      
+      if (availableVoices.length > 0 && !selectedVoice) {
+        setSelectedVoice(availableVoices[0]);
+      } else if (availableVoices.length > 0 && 
+                 selectedVoice && 
+                 !availableVoices.some(voice => voice.id === selectedVoice.id)) {
+        // 如果当前选中的音色在新的语言中不可用，则重新选择
+        setSelectedVoice(availableVoices[0]);
+      }
+    }
+  }, [selectedLanguage, selectedProvider, speechService, selectedVoice]);
 
   if (!mounted) return null;
 
@@ -610,6 +683,7 @@ export default function Home() {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="aws">AWS Polly</SelectItem>
+                          <SelectItem value="aws-ntts">AWS Polly NTTS</SelectItem>
                           <SelectItem value="minimax">Minimax</SelectItem>
                           <SelectItem value="openai">OpenAI TTS</SelectItem>
                         </SelectContent>
@@ -626,22 +700,48 @@ export default function Home() {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="max-h-[40vh] overflow-y-auto">
+                          <div className="px-3 py-2 sticky top-0 bg-background z-10 border-b">
+                            <input
+                              className="w-full h-8 px-2 text-sm border rounded focus:outline-none focus:ring-1 focus:ring-primary"
+                              placeholder={t('searchLanguage')}
+                              onChange={(e) => {
+                                const searchElement = e.target.parentElement?.parentElement?.querySelectorAll('.language-item');
+                                const searchText = e.target.value.toLowerCase();
+                                searchElement?.forEach((item) => {
+                                  const text = item.textContent?.toLowerCase() || '';
+                                  if (text.includes(searchText)) {
+                                    (item as HTMLElement).style.display = 'block';
+                                  } else {
+                                    (item as HTMLElement).style.display = 'none';
+                                  }
+                                });
+                              }}
+                            />
+                          </div>
                           {speechService === 'minimax' ? (
                             MINIMAX_LANGUAGES.map((lang) => (
-                              <SelectItem key={lang.code} value={lang.code}>
+                              <SelectItem key={lang.code} value={lang.code} className="language-item">
                                 {t(lang.nameKey)}
                               </SelectItem>
                             ))
                           ) : speechService === 'openai' ? (
                             // 使用 OpenAI 的语言列表
                             OPENAI_LANGUAGES.map((lang) => (
-                              <SelectItem key={lang.code} value={lang.code}>
+                              <SelectItem key={lang.code} value={lang.code} className="language-item">
                                 {t(lang.nameKey)}
                               </SelectItem>
                             ))
+                          ) : speechService === 'aws-ntts' ? (
+                            // 只展示支持神经引擎的语言
+                            getSupportedLanguages('aws-ntts').map((lang) => (
+                              <SelectItem key={lang.code} value={lang.code} className="language-item">
+                                {languageCodeToNameKey[lang.code] ? t(languageCodeToNameKey[lang.code] as any) : lang.name}
+                              </SelectItem>
+                            ))
                           ) : (
+                            // 使用 AWS 的语言列表（标准引擎）
                             AWS_LANGUAGES.map((lang) => (
-                              <SelectItem key={lang.code} value={lang.code}>
+                              <SelectItem key={lang.code} value={lang.code} className="language-item">
                                 {t(lang.nameKey)}
                               </SelectItem>
                             ))
@@ -654,10 +754,17 @@ export default function Home() {
                       <Label>{t('voice')}</Label>
                       {selectedLanguage && (
                         <VoiceSelector
-                          languageCode={selectedLanguage}
+                          languageCode={
+                            // 对于aws-ntts，确保使用cmn-CN作为中文的语言代码
+                            speechService === 'aws-ntts' && selectedLanguage === 'zh-CN'
+                              ? 'cmn-CN'
+                              : selectedLanguage === 'cmn-CN' && speechService !== 'aws-ntts'
+                                ? 'zh-CN'
+                                : selectedLanguage
+                          }
                           onVoiceSelect={setSelectedVoice}
                           selectedVoiceId={selectedVoice?.id}
-                          provider={selectedProvider}
+                          provider={speechService === 'aws-ntts' ? 'aws-ntts' : selectedProvider}
                         />
                       )}
                     </div>

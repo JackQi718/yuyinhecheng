@@ -43,6 +43,11 @@ const handler = NextAuth({
           throw new Error("密码错误");
         }
 
+        // 检查邮箱是否已验证
+        if (!user.emailVerified && user.status !== 'active') {
+          throw new Error("请先验证您的邮箱");
+        }
+
         return {
           id: user.id.toString(),
           email: user.email,

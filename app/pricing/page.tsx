@@ -44,7 +44,7 @@ const plans = [
   {
     type: "trial",
     features: [
-      "freeChars|amount=10000",
+      "freeChars|amount=1000",
       "trialPeriod|days=7",
       "languageSupport",
       "basicSpeedControl",

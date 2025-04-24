@@ -10,6 +10,7 @@ import { useLanguage } from "@/lib/i18n/language-context";
 import { Github, Chrome, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { signIn } from "next-auth/react";
+import Link from "next/link";
 
 interface AuthDialogProps {
   isOpen: boolean;
@@ -93,25 +94,16 @@ export function AuthDialog({ isOpen, onClose }: AuthDialogProps) {
           }),
         });
 
+        const data = await response.json();
+        
         if (!response.ok) {
-          const data = await response.json();
           throw new Error(data.error || t('registerError'));
         }
 
-        // 注册成功后自动登录
-        const loginResult = await signIn('credentials', {
-          redirect: false,
-          email,
-          password,
-        });
-
-        if (loginResult?.error) {
-          throw new Error(loginResult.error);
-        }
-
+        // 显示注册成功消息
         toast({
           title: t('registerSuccess'),
-          description: t('welcomeBack'),
+          description: t('verifyEmailPrompt') || '请查收验证邮件以完成注册',
         });
 
         onClose();
@@ -232,6 +224,13 @@ export function AuthDialog({ isOpen, onClose }: AuthDialogProps) {
               required
               disabled={isLoading}
             />
+            {isLogin && (
+              <div className="text-right text-sm">
+                <Link href="/forgot-password" className="text-primary hover:underline">
+                  {t('forgotPassword') || 'Forgot password?'}
+                </Link>
+              </div>
+            )}
           </div>
           {!isLogin && (
             <div className="space-y-2">

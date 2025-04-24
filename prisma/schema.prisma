@@ -13,15 +13,14 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
-
-  user users @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              users   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -42,6 +41,17 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
+model ResetToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  expires   DateTime
+  createdAt DateTime @default(now())
+  user      users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
 model Subscription {
   id        String   @id @default(cuid())
   userId    String   @unique
@@ -53,24 +63,24 @@ model Subscription {
 }
 
 model CharacterQuota {
-  id              String    @id @default(cuid())
-  userId          String    @unique
-  permanentQuota  Int       @default(0)
-  temporaryQuota  Int       @default(0)
-  usedCharacters  Int       @default(0)
-  lastUpdated     DateTime  @default(now())
-  quotaExpiry     DateTime?
-  user            users     @relation(fields: [userId], references: [id])
+  id             String    @id @default(cuid())
+  userId         String    @unique
+  permanentQuota Int       @default(0)
+  temporaryQuota Int       @default(0)
+  usedCharacters Int       @default(0)
+  lastUpdated    DateTime  @default(now())
+  quotaExpiry    DateTime?
+  user           users     @relation(fields: [userId], references: [id])
 }
 
 model ClonedVoice {
-  id          String   @id @default(cuid())
-  userId      String
-  voiceId     String
-  name        String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  user        users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String   @id @default(cuid())
+  userId    String
+  voiceId   String
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      users    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
@@ -93,20 +103,18 @@ model users {
   lastLoginAt         DateTime?
   language            String          @default("zh")
   timezone            String?
-  totalCharactersUsed Int            @default(0)
+  totalCharactersUsed Int             @default(0)
   lastUsedAt          DateTime?
-  
-  // 克隆相关字段
-  remaining_clones    Int            @default(0)
-  total_clones        Int            @default(0)
-  used_clones         Int            @default(0)
-  
-  subscription        Subscription?
-  characterQuota      CharacterQuota?
+  remaining_clones    Int             @default(0)
+  total_clones        Int             @default(0)
+  used_clones         Int             @default(0)
   accounts            Account[]
-  sessions            Session[]
-  payments            payment[]
+  characterQuota      CharacterQuota?
   clonedVoices        ClonedVoice[]
+  resetTokens         ResetToken[]
+  sessions            Session[]
+  subscription        Subscription?
+  payments            payment[]
 }
 
 model payment {
@@ -119,7 +127,6 @@ model payment {
   clone_count Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  
   user        users    @relation(fields: [userId], references: [id])
 
   @@index([userId])

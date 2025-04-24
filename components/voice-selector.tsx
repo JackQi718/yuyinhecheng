@@ -12,7 +12,7 @@ interface VoiceSelectorProps {
   languageCode: string;
   onVoiceSelect: (voice: VoiceOption | null) => void;
   selectedVoiceId?: string;
-  provider: 'aws' | 'minimax' | 'openai';
+  provider: 'aws' | 'aws-ntts' | 'minimax' | 'openai';
   clonedVoices?: VoiceOption[];
 }
 

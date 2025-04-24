@@ -12,6 +12,7 @@ export const cs: TranslationType = {
   uploadFile: "Nahrát soubor",
   downloadAudio: "Stáhnout audio",
   selectLanguage: "Vyberte jazyk",
+  searchLanguage: "Hledat jazyk...",
   theme: "Téma",
   light: "Světlý",
   dark: "Tmavý",
@@ -250,7 +251,7 @@ export const cs: TranslationType = {
   // FAQ
   faq: "Často kladené otázky",
   faqTrialFeatures: "Jaké funkce jsou zahrnuty ve zkušební verzi?",
-  faqTrialFeaturesAnswer: "Zkušební verze obsahuje 7denní období s 10 000 znaky, podporu 50+ jazyků, základní ovládání rychlosti a výběr hlasu. Můžete si vyzkoušet základní funkce prostřednictvím textového vstupu.",
+  faqTrialFeaturesAnswer: "Zkušební verze obsahuje 7denní období s 1000 znaky, podporu 50+ jazyků, základní ovládání rychlosti a výběr hlasu. Můžete si vyzkoušet základní funkce prostřednictvím textového vstupu.",
   faqHowToTry: "Jak začít se zkušební verzí?",
   faqHowToTryAnswer: "Stačí se zaregistrovat a získat zkušební přístup bez nutnosti kreditní karty. Během zkušebního období můžete kdykoli přejít na placený plán pro více funkcí a vyšší kvóty.",
   faqQuotaCalc: "Jak se počítá kvóta znaků?",
@@ -481,5 +482,40 @@ export const cs: TranslationType = {
       testimonial7Content: "Jako hlasový herec mám vysoké nároky na kvalitu zvuku. Kvalita klonování hlasu na této platformě je působivá, zachovává emoce a charakteristiky původního hlasu.",
       testimonial8Name: "Paní Huang",
       testimonial8Role: "Pedagožka",
-      testimonial8Content: "Po naklonování mého hlasu na této platformě mohu předem nahrávat výukový obsah a umožnit studentům slyšet mé výklady kdykoli, což výrazně zlepšuje efektivitu výuky."
-  } as const;
+      testimonial8Content: "Po naklonování mého hlasu na této platformě mohu předem nahrávat výukový obsah a umožnit studentům slyšet mé výklady kdykoli, což výrazně zlepšuje efektivitu výuky.",
+  
+   // Obnova hesla
+   forgotPassword: "Zapomenuté heslo",
+   resetPassword: "Obnovit heslo",
+   newPassword: "Nové heslo",
+   sendResetLink: "Odeslat odkaz pro obnovu",
+   passwordResetSuccess: "Heslo bylo úspěšně obnoveno",
+   passwordResetSuccessDesc: "Vaše heslo bylo úspěšně změněno, přesměrováváme na hlavní stránku...",
+   invalidResetToken: "Neplatný nebo chybějící obnovovací token, požádejte znovu o odkaz",
+   createNewPassword: "Vytvořte nové heslo pro svůj účet",
+   redirectingToLogin: "Přesměrování na hlavní stránku...",
+   requestNewResetLink: "Požádejte znovu o obnovovací odkaz",
+   emailRequired: "Zadejte prosím svůj e-mail",
+   passwordTooShort: "Heslo musí mít alespoň 6 znaků",
+   success: "Úspěch",
+   resetLinkSent: "Odkaz pro obnovu byl odeslán! Zkontrolujte e-mail",
+   enterEmailForReset: "Zadejte e-mail pro obdržení obnovovacího odkazu",
+   checkEmailForInstructions: "Zkontrolujte e-mail pro pokyny k obnově hesla",
+   emailMightTakeTime: "Doručení e-mailu může trvat několik minut, zkontrolujte i spam",
+   backToLogin: "Zpět k přihlášení",
+   missingResetToken: "Chybějící obnovovací token",
+   somethingWentWrong: "Něco se pokazilo, zkuste to prosím později",
+   verifyEmailPrompt: "Ověřte svůj účet pomocí e-mailu. Po ověření se můžete přihlásit.",
+
+   // Stránka pro ověření emailu
+   emailVerification: "Ověření emailu",
+   verifyingYourEmail: "Probíhá ověření vaší emailové adresy",
+   verificationSuccess: "Ověření úspěšné",
+   verificationFailed: "Ověření selhalo",
+   verifying: "Probíhá ověření...",
+   invalidVerificationLink: "Neplatný ověřovací odkaz",
+   verificationSuccessful: "Email byl úspěšně ověřen!",
+   goToHomepage: "Přejít na domovskou stránku",
+   resendVerificationEmail: "Znovu odeslat ověřovací email",
+   verificationError: "Během ověřování došlo k chybě"
+    } as const;

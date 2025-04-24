@@ -61,7 +61,7 @@ export async function POST(req: Request) {
     });
 
     const requestBody = {
-      model: "speech-01-turbo",
+      model: "speech-02-turbo",
       text,
       stream: false,
       voice_setting: {

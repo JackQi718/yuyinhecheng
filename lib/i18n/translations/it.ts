@@ -12,6 +12,7 @@ export const it: TranslationType = {
   uploadFile: "Carica File",
   downloadAudio: "Scarica Audio",
   selectLanguage: "Seleziona Lingua",
+  searchLanguage: "Cerca lingua...",
   theme: "Tema",
   light: "Chiaro",
   dark: "Scuro",
@@ -250,7 +251,7 @@ export const it: TranslationType = {
   // FAQ
   faq: "Domande Frequenti",
   faqTrialFeatures: "Cosa include la prova gratuita?",
-  faqTrialFeaturesAnswer: "7 giorni con 10.000 caratteri, 50+ lingue, controllo velocità base e selezione voci.",
+  faqTrialFeaturesAnswer: "7 giorni con 1000 caratteri, 50+ lingue, controllo velocità base e selezione voci.",
   faqHowToTry: "Come iniziare la prova?",
   faqHowToTryAnswer: "Registrati per accedere alla prova senza carta di credito. Puoi aggiornare il piano in qualsiasi momento.",
   faqQuotaCalc: "Come si calcolano i caratteri?",
@@ -481,5 +482,40 @@ export const it: TranslationType = {
       testimonial7Content: "Come professionista esigo alta qualità. La clonazione mantiene emozioni e caratteristiche originali in modo impressionante.",
       testimonial8Name: "Sig.ra Huang",
       testimonial8Role: "Educatrice",
-      testimonial8Content: "Clonando la mia voce posso registrare lezioni in anticipo, migliorando radicalmente l'efficienza didattica."
+      testimonial8Content: "Clonando la mia voce posso registrare lezioni in anticipo, migliorando radicalmente l'efficienza didattica.",
+  
+  // Reimpostazione password
+  forgotPassword: "Hai dimenticato la password",
+  resetPassword: "Reimposta password",
+  newPassword: "Nuova password",
+  sendResetLink: "Invia link di reimpostazione",
+  passwordResetSuccess: "Password reimpostata con successo",
+  passwordResetSuccessDesc: "La tua password è stata reimpostata con successo, reindirizzamento alla homepage...",
+  invalidResetToken: "Token di reimpostazione non valido o mancante, richiedi un nuovo link",
+  createNewPassword: "Crea una nuova password per il tuo account",
+  redirectingToLogin: "Reindirizzamento alla homepage...",
+  requestNewResetLink: "Richiedi un nuovo link di reimpostazione",
+  emailRequired: "Inserisci il tuo indirizzo email",
+  passwordTooShort: "La password deve contenere almeno 6 caratteri",
+  success: "Successo",
+  resetLinkSent: "Link di reimpostazione inviato! Controlla la tua email",
+  enterEmailForReset: "Inserisci l'email per ricevere il link di reimpostazione",
+  checkEmailForInstructions: "Controlla l'email per le istruzioni di reimpostazione",
+  emailMightTakeTime: "L'email potrebbe richiedere alcuni minuti, controlla la cartella spam",
+  backToLogin: "Torna al login",
+  missingResetToken: "Token di reimpostazione mancante",
+  somethingWentWrong: "Si è verificato un errore, riprova più tardi",
+  verifyEmailPrompt: "Verifica l'account tramite email. Dopo la verifica potrai accedere.",
+
+  // Pagina di verifica email
+  emailVerification: "Verifica dell'email",
+  verifyingYourEmail: "Verifica del tuo indirizzo email",
+  verificationSuccess: "Verifica riuscita",
+  verificationFailed: "Verifica fallita",
+  verifying: "Verifica in corso...",
+  invalidVerificationLink: "Link di verifica non valido",
+  verificationSuccessful: "Email verificata con successo!",
+  goToHomepage: "Vai alla homepage",
+  resendVerificationEmail: "Invia nuovamente l'email di verifica",
+  verificationError: "Errore durante la verifica"
     } as const;

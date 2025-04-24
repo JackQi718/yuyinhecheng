@@ -12,6 +12,7 @@ export const he: TranslationType = {
   uploadFile: "העלה קובץ",
   downloadAudio: "הורד אודיו",
   selectLanguage: "בחר שפה",
+  searchLanguage: "חפש שפה...",
   theme: "ערכת נושא",
   light: "בהירה",
   dark: "כהה", 
@@ -251,7 +252,7 @@ export const he: TranslationType = {
   // FAQ
   faq: "שאלות נפוצות",
   faqTrialFeatures: "אילו תכונות כלולות בניסיון?",
-  faqTrialFeaturesAnswer: "הניסיון כולל 7 ימים עם 10,000 תווים, תמיכה ב-50+ שפות, בקרת מהירות בסיסית ובחירת קול. ניתן לחוות את תכונות הליבה דרך קלט טקסט כל עוד הוא עומד בדרישות.",
+  faqTrialFeaturesAnswer: "הניסיון כולל 7 ימים עם 1000 תווים, תמיכה ב-50+ שפות, בקרת מהירות בסיסית ובחירת קול. ניתן לחוות את תכונות הליבה דרך קלט טקסט כל עוד הוא עומד בדרישות.",
   faqHowToTry: "איך מתחילים ניסיון?",
   faqHowToTryAnswer: "פשוט הירשם לחשבון כדי לקבל גישה לניסיון, אין צורך בכרטיס אשראי. ניתן לשדרג לתוכנית בתשלום בכל עת במהלך הניסיון.",
   faqQuotaCalc: "כיצד מחושבת מכסת התווים?",
@@ -482,5 +483,40 @@ export const he: TranslationType = {
       testimonial7Content: "כמדבב מקצועי יש לי דרישות גבוהות לאיכות קול. איכות השיבוט כאן מרשימה במיוחד ומשמרת את הרגש והמאפיינים הייחודיים של הקול המקורי.",
       testimonial8Name: "גב' הואנג",
       testimonial8Role: "מחנכת",
-      testimonial8Content: "לאחר שיבוט הקול שלי בפלטפורמה, אני יכולה להקליט שיעורים מראש ולהפוך אותם לזמינים לתלמידים בכל עת - שיפור דרמטי ביעילות ההוראה."
+      testimonial8Content: "לאחר שיבוט הקול שלי בפלטפורמה, אני יכולה להקליט שיעורים מראש ולהפוך אותם לזמינים לתלמידים בכל עת - שיפור דרמטי ביעילות ההוראה.",
+  
+   // איפוס ססמה
+   forgotPassword: "שכחתי ססמה",
+   resetPassword: "איפוס ססמה",
+   newPassword: "ססמה חדשה",
+   sendResetLink: "שלח קישור לאיפוס",
+   passwordResetSuccess: "איפוס הססמה בוצע בהצלחה",
+   passwordResetSuccessDesc: "הססמה שלך אופסה בהצלחה, מעביר לדף הבית...",
+   invalidResetToken: "אסימון איפוס לא תקין או חסר, אנא בקש קישור איפוס חדש",
+   createNewPassword: "צור ססמה חדשה לחשבונך",
+   redirectingToLogin: "מעביר לדף הבית...",
+   requestNewResetLink: "אנא בקש קישור איפוס חדש",
+   emailRequired: "נא להזין את כתובת הדוא״ל שלך",
+   passwordTooShort: "הססמה חייבת להכיל לפחות 6 תווים",
+   success: "הצלחה",
+   resetLinkSent: "קישור האיפוס נשלח! נא לבדוק את הדוא״ל",
+   enterEmailForReset: "הזן את הדוא״ל שלך כדי לקבל קישור איפוס",
+   checkEmailForInstructions: "בדוק בדוא״ל שלך הוראות לאיפוס הססמה",
+   emailMightTakeTime: "ייתכן שהדוא״ל יגיע תוך מספר דקות, אל תשכח לבדוק בתיקיית הספאם",
+   backToLogin: "חזור לכניסה",
+   missingResetToken: "אסימון איפוס חסר",
+   somethingWentWrong: "משהו השתבש, נא לנסות שוב מאוחר יותר",
+   verifyEmailPrompt: "נא לאמת את החשבון דרך הדוא״ל. לאחר האימות תוכל להתחבר.",
+
+    // עמוד אימות אימייל
+    emailVerification: "אימות אימייל",
+    verifyingYourEmail: "מאמת את כתובת האימייל שלך",
+    verificationSuccess: "אימות הצליח",
+    verificationFailed: "אימות נכשל",
+    verifying: "בתהליך אימות...",
+    invalidVerificationLink: "קישור אימות לא תקין",
+    verificationSuccessful: "האימייל אומת בהצלחה!",
+    goToHomepage: "לדף הבית",
+    resendVerificationEmail: "שלח מחדש אימייל אימות",
+    verificationError: "שגיאה במהלך האימות"
     } as const;
